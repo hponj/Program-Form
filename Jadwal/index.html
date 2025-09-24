@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scheduler Program</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* supaya tanda silang terlihat simpel */
+    .delete-cross {
+      cursor: pointer;
+      font-size: 18px;
+      color: #000; /* warna hitam default */
+      text-decoration: none;
+    }
+    .delete-cross:hover {
+      color: #dc3545; /* merah saat hover */
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <div class="container my-4">
+    <h1 class="text-center mb-4">📅 Scheduler Program</h1>
+
+    <!-- Form Tambah Program -->
+    <div class="card mb-4">
+      <div class="card-header">Tambah Program Baru</div>
+      <div class="card-body">
+        <form id="programForm" class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">Nama Program</label>
+            <input type="text" class="form-control" id="namaProgram" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Tanggal Mulai</label>
+            <input type="date" class="form-control" id="tanggalMulai">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Tanggal Selesai</label>
+            <input type="date" class="form-control" id="tanggalSelesai">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Tingkat Kepentingan</label>
+            <select class="form-select" id="kepentingan" required>
+              <option value="">Pilih...</option>
+              <option value="Tinggi">Tinggi</option>
+              <option value="Sedang">Sedang</option>
+              <option value="Rendah">Rendah</option>
+            </select>
+          </div>
+
+          <!-- Dropdown Bulan (opsional) -->
+          <div class="col-md-3">
+            <label class="form-label">Bulan (opsional)</label>
+            <select class="form-select" id="bulan">
+              <option value="">Tidak pilih bulan</option>
+              <option value="01">Januari</option>
+              <option value="02">Februari</option>
+              <option value="03">Maret</option>
+              <option value="04">April</option>
+              <option value="05">Mei</option>
+              <option value="06">Juni</option>
+              <option value="07">Juli</option>
+              <option value="08">Agustus</option>
+              <option value="09">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Hari (opsional)</label>
+            <select class="form-select" id="hari">
+              <option value="Tidak Termasuk">Tidak Termasuk</option>
+              <option value="Senin">Senin</option>
+              <option value="Selasa">Selasa</option>
+              <option value="Rabu">Rabu</option>
+              <option value="Kamis">Kamis</option>
+              <option value="Jumat">Jumat</option>
+              <option value="Sabtu">Sabtu</option>
+              <option value="Minggu">Minggu</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Sesi (opsional)</label>
+            <select class="form-select" id="sesi">
+              <option value="Tidak Termasuk">Tidak Termasuk</option>
+              <option value="pelajaran1">Pelajaran Pertama</option>
+              <option value="pelajaran2">Pelajaran Kedua</option>
+            </select>
+          </div>
+          <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-primary w-100">Tambah Program</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tabel Jadwal Mingguan -->
+    <div class="card">
+      <div class="card-header">Jadwal Mingguan</div>
+      <div class="card-body">
+        <table class="table table-bordered text-center">
+          <thead class="table-light">
+            <tr>
+              <th>Hari</th>
+              <th>Pelajaran Pertama</th>
+              <th>Pelajaran Kedua</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-hari="Senin">
+              <td>Senin</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
+            </tr>
+            <tr data-hari="Selasa">
+              <td>Selasa</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
+            </tr>
+            <tr data-hari="Rabu">
+              <td>Rabu</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
+            </tr>
+            <tr data-hari="Kamis">
+              <td>Kamis</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
+            </tr>
+            <tr data-hari="Jumat">
+              <td>Jumat</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
+            </tr>
+            <tr data-hari="Sabtu">
+              <td>Sabtu</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
+            </tr>
+            <tr data-hari="Minggu">
+              <td>Minggu</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tabel Program Berdasarkan Bulan -->
+    <div class="card mt-4">
+      <div class="card-header">Catatan Program per Bulan</div>
+      <div class="card-body">
+        <table class="table table-bordered text-center">
+          <thead class="table-light">
+            <tr>
+              <th>Bulan</th>
+              <th>Nama Program</th>
+              <th>Tanggal Mulai</th>
+              <th>Tanggal Selesai</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="bulanTableBody">
+            <!-- Isi otomatis lewat JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let programs = JSON.parse(localStorage.getItem('programs')) || [];
+
+    const namaBulanMap = {
+      "01":"Januari","02":"Februari","03":"Maret","04":"April","05":"Mei","06":"Juni",
+      "07":"Juli","08":"Agustus","09":"September","10":"Oktober","11":"November","12":"Desember",
+      "": "Tanpa Bulan"
+    };
+
+    function renderBulanTable() {
+      const tbody = document.getElementById('bulanTableBody');
+      tbody.innerHTML = '';
+
+      programs.forEach((prog, index) => {
+        const bulanKey = prog.bulan || "";
+        const bulanNama = prog.bulanNama || namaBulanMap[bulanKey];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${bulanNama}</td>
+          <td>${prog.nama}</td>
+          <td>${prog.mulai || '-'}</td>
+          <td>${prog.selesai || '-'}</td>
+          <td><span class="delete-cross">❌</span></td>
+        `;
+        tr.querySelector('.delete-cross').addEventListener('click', () => {
+          programs.splice(index, 1);
+          localStorage.setItem('programs', JSON.stringify(programs));
+          renderPrograms();
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderPrograms() {
+      document.querySelectorAll('.pelajaran1, .pelajaran2').forEach(cell => cell.innerHTML = '');
+
+      programs.forEach((prog, index) => {
+        const div = document.createElement('div');
+        div.className = 'p-2 mb-1 bg-light border rounded position-relative text-start';
+        div.innerHTML = `
+          <button type="button" class="btn-close btn-sm position-absolute top-0 end-0 m-1" aria-label="Close"></button>
+          <strong>${prog.nama}</strong><br>
+          ${prog.mulai && prog.selesai ? `${prog.mulai} - ${prog.selesai}` : 'Tanpa batas waktu'}<br>
+          <span class="badge bg-${prog.kepentingan=='Tinggi'?'danger':prog.kepentingan=='Sedang'?'warning':'secondary'}">${prog.kepentingan}</span>
+          ${prog.bulan ? `<br><small>Bulan: ${prog.bulanNama}</small>` : ''}
+        `;
+        div.querySelector('.btn-close').addEventListener('click', () => {
+          programs.splice(index,1);
+          localStorage.setItem('programs', JSON.stringify(programs));
+          renderPrograms();
+        });
+
+        if(prog.hari !== "Tidak Termasuk" && prog.sesi !== "Tidak Termasuk"){
+          const cell = document.querySelector(`tr[data-hari="${prog.hari}"] .${prog.sesi}`);
+          if(cell){
+            cell.appendChild(div);
+          }
+        }
+      });
+
+      renderBulanTable();
+    }
+
+    renderPrograms();
+
+    document.getElementById('programForm').addEventListener('submit', function(e){
+      e.preventDefault();
+
+      const nama = document.getElementById('namaProgram').value;
+      const mulai = document.getElementById('tanggalMulai').value;
+      const selesai = document.getElementById('tanggalSelesai').value;
+      const kepentingan = document.getElementById('kepentingan').value;
+      const hari = document.getElementById('hari').value || "Tidak Termasuk";
+      const sesi = document.getElementById('sesi').value || "Tidak Termasuk";
+      let bulan = document.getElementById('bulan').value;
+
+      if(!bulan && mulai){
+        bulan = mulai.split('-')[1];
+      }
+
+      const bulanNama = bulan ? namaBulanMap[bulan] : null;
+
+      programs.push({nama, mulai, selesai, kepentingan, hari, sesi, bulan, bulanNama});
+      localStorage.setItem('programs', JSON.stringify(programs));
+
+      renderPrograms();
+      this.reset();
+    });
+  </script>
+</body>
+</html>
