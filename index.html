@@ -17,7 +17,7 @@
       background-color: #f8f9fa;
       border-radius: .25rem;
       padding: .5rem 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem; /* 🟩 Tambah jarak bawah */
     }
     .check-table td {
       width: 14.2%;
@@ -27,6 +27,9 @@
     .check-table input[type="checkbox"] {
       transform: scale(1.2);
       cursor: pointer;
+    }
+    .card {
+      margin-bottom: 1.5rem; /* 🟩 Tambah jarak antar card/table */
     }
   </style>
 </head>
@@ -108,7 +111,7 @@
   </div>
 
   <!-- Jadwal Mingguan -->
-  <div class="card mt-3">
+  <div class="card">
     <div class="card-header">Jadwal Mingguan</div>
     <div class="card-body">
       <table class="table table-bordered text-center">
@@ -133,7 +136,7 @@
   </div>
 
   <!-- Catatan Program Bulanan -->
-  <div class="card mt-3">
+  <div class="card">
     <div class="card-header">Catatan Program Bulanan</div>
     <div class="card-body">
       <table class="table table-bordered text-center">
@@ -152,7 +155,7 @@
   </div>
 
   <!-- ✅ Catatan Check Bulanan -->
-  <div class="card mt-3">
+  <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
       <div>
         <button id="prevMonth" class="btn btn-sm btn-outline-secondary me-2">‹ Sebelumnya</button>
