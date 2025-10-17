@@ -2,176 +2,333 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checklist Bulanan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Program Scheduler</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8f8f8;
-      color: #222;
-      padding: 40px;
-      margin: 0;
-    }
-
-    h1 {
-      font-size: 22px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .calendar-wrapper {
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .nav-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    button {
-      background-color: #e0e0e0;
-      color: #222;
-      border: 1px solid #bbb;
-      border-radius: 4px;
-      padding: 6px 12px;
-      font-size: 14px;
+    .delete-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      color: black;
     }
-
-    button:hover {
-      background-color: #d3d3d3;
+    .program-list {
+      background-color: #f8f9fa;
+      border-radius: .25rem;
+      padding: .5rem 1rem;
+      margin-bottom: 1rem;
     }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      background-color: #fff;
-      border: 1px solid #ccc;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      text-align: center;
-      padding: 10px;
+    .check-table td {
       width: 14.2%;
-      height: 60px;
+      height: 90px;
+      vertical-align: middle;
     }
-
-    th {
-      background-color: #f0f0f0;
-      font-weight: 600;
-    }
-
-    input[type="checkbox"] {
-      transform: scale(1.3);
+    .check-table input[type="checkbox"] {
+      transform: scale(1.2);
       cursor: pointer;
-      margin-top: 5px;
-    }
-
-    td div {
-      margin-bottom: 4px;
-      font-size: 13px;
-      color: #333;
     }
   </style>
 </head>
-<body>
+<body class="container my-4">
 
-  <div class="calendar-wrapper">
-    <h1 id="monthYear"></h1>
+  <h2 class="mb-3">Program Scheduler</h2>
 
-    <div class="nav-buttons">
-      <button id="prevMonth">&lt; Sebelumnya</button>
-      <button id="nextMonth">Berikutnya &gt;</button>
+  <!-- Form Input Program -->
+  <form id="programForm" class="row g-3 mb-4">
+    <div class="col-md-3">
+      <label class="form-label">Nama Program</label>
+      <input type="text" id="namaProgram" class="form-control" required>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Tanggal Mulai</label>
+      <input type="date" id="tanggalMulai" class="form-control">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Tanggal Selesai</label>
+      <input type="date" id="tanggalSelesai" class="form-control">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Tingkat Kepentingan</label>
+      <select id="kepentingan" class="form-select">
+        <option>Tinggi</option>
+        <option>Sedang</option>
+        <option>Rendah</option>
+      </select>
     </div>
 
-    <table id="calendar">
-      <thead>
-        <tr>
-          <th>Sen</th>
-          <th>Sel</th>
-          <th>Rab</th>
-          <th>Kam</th>
-          <th>Jum</th>
-          <th>Sab</th>
-          <th>Min</th>
-        </tr>
-      </thead>
-      <tbody id="calendarBody"></tbody>
-    </table>
+    <div class="col-md-3">
+      <label class="form-label">Bulan (opsional)</label>
+      <select id="bulan" class="form-select">
+        <option value="">Tidak Termasuk</option>
+        <option value="01">Januari</option>
+        <option value="02">Februari</option>
+        <option value="03">Maret</option>
+        <option value="04">April</option>
+        <option value="05">Mei</option>
+        <option value="06">Juni</option>
+        <option value="07">Juli</option>
+        <option value="08">Agustus</option>
+        <option value="09">September</option>
+        <option value="10">Oktober</option>
+        <option value="11">November</option>
+        <option value="12">Desember</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Hari</label>
+      <select id="hari" class="form-select">
+        <option value="">Tidak Termasuk</option>
+        <option>Senin</option>
+        <option>Selasa</option>
+        <option>Rabu</option>
+        <option>Kamis</option>
+        <option>Jumat</option>
+        <option>Sabtu</option>
+        <option>Minggu</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Sesi</label>
+      <select id="sesi" class="form-select">
+        <option value="">Tidak Termasuk</option>
+        <option value="pelajaran1">Pelajaran Pertama</option>
+        <option value="pelajaran2">Pelajaran Kedua</option>
+      </select>
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary w-100">Tambah Program</button>
+    </div>
+  </form>
+
+  <!-- List Program -->
+  <div class="program-list">
+    <h5>Daftar Program:</h5>
+    <ul id="programList" class="mb-0"></ul>
+  </div>
+
+  <!-- Jadwal Mingguan -->
+  <div class="card mt-3">
+    <div class="card-header">Jadwal Mingguan</div>
+    <div class="card-body">
+      <table class="table table-bordered text-center">
+        <thead class="table-light">
+          <tr>
+            <th>Hari</th>
+            <th>Pelajaran Pertama</th>
+            <th>Pelajaran Kedua</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-hari="Senin"><td>Senin</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Selasa"><td>Selasa</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Rabu"><td>Rabu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Kamis"><td>Kamis</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Jumat"><td>Jumat</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Sabtu"><td>Sabtu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Minggu"><td>Minggu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Catatan Program Bulanan -->
+  <div class="card mt-3">
+    <div class="card-header">Catatan Program Bulanan</div>
+    <div class="card-body">
+      <table class="table table-bordered text-center">
+        <thead class="table-light">
+          <tr>
+            <th>Bulan</th>
+            <th>Nama Program</th>
+            <th>Tanggal Mulai</th>
+            <th>Tanggal Selesai</th>
+            <th>Hapus</th>
+          </tr>
+        </thead>
+        <tbody id="bulanTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ✅ Catatan Check Bulanan -->
+  <div class="card mt-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <div>
+        <button id="prevMonth" class="btn btn-sm btn-outline-secondary me-2">‹ Sebelumnya</button>
+        <button id="nextMonth" class="btn btn-sm btn-outline-secondary">Berikutnya ›</button>
+      </div>
+      <span id="monthTitle" class="fw-bold"></span>
+      <button id="resetChecklist" class="btn btn-sm btn-outline-danger">Reset Checklist</button>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered text-center align-middle check-table">
+          <thead class="table-light">
+            <tr>
+              <th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th>
+            </tr>
+          </thead>
+          <tbody id="checkBulanBody"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script>
-    const monthYear = document.getElementById("monthYear");
-    const calendarBody = document.getElementById("calendarBody");
+    let programs = JSON.parse(localStorage.getItem('programs')) || [];
 
-    const monthNames = [
-      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ];
+    document.getElementById('programForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const nama = document.getElementById('namaProgram').value.trim();
+      const mulai = document.getElementById('tanggalMulai').value;
+      const selesai = document.getElementById('tanggalSelesai').value;
+      const kepentingan = document.getElementById('kepentingan').value;
+      const bulan = document.getElementById('bulan').value;
+      const bulanNama = document.getElementById('bulan').selectedOptions[0].text;
+      const hari = document.getElementById('hari').value;
+      const sesi = document.getElementById('sesi').value;
 
+      programs.push({nama, mulai, selesai, kepentingan, bulan, bulanNama, hari, sesi});
+      localStorage.setItem('programs', JSON.stringify(programs));
+      this.reset();
+      renderPrograms();
+    });
+
+    function renderPrograms() {
+      document.querySelectorAll('.pelajaran1, .pelajaran2').forEach(cell => cell.innerHTML = '');
+      programs.forEach((prog, index) => {
+        if (prog.hari && prog.sesi) {
+          const div = document.createElement('div');
+          div.className = 'p-2 mb-1 bg-light border rounded position-relative text-start';
+          div.innerHTML = `
+            <button type="button" class="btn-close btn-sm position-absolute top-0 end-0 m-1"></button>
+            <strong>${prog.nama}</strong><br>
+            ${prog.mulai && prog.selesai ? `${prog.mulai} - ${prog.selesai}` : 'Tanpa batas waktu'}<br>
+            <span class="badge bg-${prog.kepentingan=='Tinggi'?'danger':prog.kepentingan=='Sedang'?'warning':'secondary'}">${prog.kepentingan}</span>
+          `;
+          div.querySelector('.btn-close').addEventListener('click', () => {
+            programs.splice(index,1);
+            localStorage.setItem('programs', JSON.stringify(programs));
+            renderPrograms();
+          });
+          const cell = document.querySelector(`tr[data-hari="${prog.hari}"] .${prog.sesi}`);
+          if(cell){ cell.appendChild(div); }
+        }
+      });
+      renderBulanTable();
+      renderProgramList();
+      renderCheckBulanan();
+    }
+
+    function renderBulanTable() {
+      const tbody = document.getElementById('bulanTableBody');
+      tbody.innerHTML = '';
+      const namaBulanMap = {
+        "01":"Januari","02":"Februari","03":"Maret","04":"April","05":"Mei","06":"Juni",
+        "07":"Juli","08":"Agustus","09":"September","10":"Oktober","11":"November","12":"Desember"
+      };
+      const withBulan = programs.filter(p => p.bulan && p.bulan !== "");
+      const seenNames = new Set();
+      withBulan.forEach(prog => {
+        if (!seenNames.has(prog.nama)) {
+          seenNames.add(prog.nama);
+          const bulanNama = prog.bulanNama || namaBulanMap[prog.bulan];
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${bulanNama}</td>
+            <td>${prog.nama}</td>
+            <td>${prog.mulai || '-'}</td>
+            <td>${prog.selesai || '-'}</td>
+            <td><button class="delete-btn" data-name="${prog.nama}">x</button></td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+      tbody.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.name;
+          programs = programs.filter(p => !(p.nama === name && p.bulan));
+          localStorage.setItem('programs', JSON.stringify(programs));
+          renderPrograms();
+        });
+      });
+    }
+
+    function renderProgramList() {
+      const list = document.getElementById('programList');
+      list.innerHTML = '';
+      const names = [...new Set(programs.map(p => p.nama))];
+      names.forEach(nama => {
+        const li = document.createElement('li');
+        li.textContent = nama;
+        list.appendChild(li);
+      });
+    }
+
+    // === ✅ Kalender Bulanan Otomatis + Navigasi ===
     let currentDate = new Date();
 
-    function renderCalendar(date) {
-      const year = date.getFullYear();
-      const month = date.getMonth();
+    function renderCheckBulanan() {
+      const tbody = document.getElementById('checkBulanBody');
+      tbody.innerHTML = '';
 
-      monthYear.textContent = `Checklist Bulanan - ${monthNames[month]} ${year}`;
-      calendarBody.innerHTML = "";
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+      document.getElementById('monthTitle').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
 
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const startDay = (firstDay + 6) % 7;
+      const storageKey = `checklist-${year}-${month+1}`;
+      let monthlyChecks = JSON.parse(localStorage.getItem(storageKey)) || {};
 
-      let dateCount = 1;
-      let checklistKey = `checklist_${monthNames[month]}_${year}`;
-      let savedChecklist = JSON.parse(localStorage.getItem(checklistKey)) || {};
-
-      for (let i = 0; i < 6; i++) {
-        const row = document.createElement("tr");
-        for (let j = 0; j < 7; j++) {
-          const cell = document.createElement("td");
-          if ((i === 0 && j < startDay) || dateCount > daysInMonth) {
-            cell.textContent = "";
-          } else {
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.checked = savedChecklist[dateCount] || false;
-            checkbox.addEventListener("change", () => {
-              savedChecklist[dateCount] = checkbox.checked;
-              localStorage.setItem(checklistKey, JSON.stringify(savedChecklist));
-            });
-
-            const label = document.createElement("div");
-            label.textContent = dateCount;
-
-            cell.appendChild(label);
-            cell.appendChild(checkbox);
-            dateCount++;
-          }
-          row.appendChild(cell);
-        }
-        calendarBody.appendChild(row);
-        if (dateCount > daysInMonth) break;
+      let tr = document.createElement('tr');
+      for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
+        tr.appendChild(document.createElement('td'));
       }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const td = document.createElement('td');
+        td.innerHTML = `
+          <div>
+            <div class="fw-bold">${day}</div>
+            <input type="checkbox" class="form-check-input mt-1 check-day" data-day="${day}" ${monthlyChecks[day] ? 'checked' : ''}>
+          </div>`;
+        tr.appendChild(td);
+        if (new Date(year, month, day).getDay() === 0) {
+          tbody.appendChild(tr);
+          tr = document.createElement('tr');
+        }
+      }
+      if (tr.children.length > 0) tbody.appendChild(tr);
+
+      document.querySelectorAll('.check-day').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const day = cb.dataset.day;
+          monthlyChecks[day] = cb.checked;
+          localStorage.setItem(storageKey, JSON.stringify(monthlyChecks));
+        });
+      });
+
+      document.getElementById('resetChecklist').onclick = () => {
+        if (confirm('Yakin reset semua checklist bulan ini?')) {
+          localStorage.removeItem(storageKey);
+          renderCheckBulanan();
+        }
+      };
     }
 
-    document.getElementById("prevMonth").addEventListener("click", () => {
+    document.getElementById('prevMonth').onclick = () => {
       currentDate.setMonth(currentDate.getMonth() - 1);
-      renderCalendar(currentDate);
-    });
-
-    document.getElementById("nextMonth").addEventListener("click", () => {
+      renderCheckBulanan();
+    };
+    document.getElementById('nextMonth').onclick = () => {
       currentDate.setMonth(currentDate.getMonth() + 1);
-      renderCalendar(currentDate);
-    });
+      renderCheckBulanan();
+    };
 
-    renderCalendar(currentDate);
+    renderPrograms();
   </script>
-
 </body>
 </html>
