@@ -19,6 +19,10 @@
       padding: .5rem 1rem;
       margin-bottom: 1rem;
     }
+    .check-table td {
+      text-align: center;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body class="container my-4">
@@ -111,27 +115,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr data-hari="Senin">
-            <td>Senin</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
-          </tr>
-          <tr data-hari="Selasa">
-            <td>Selasa</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
-          </tr>
-          <tr data-hari="Rabu">
-            <td>Rabu</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
-          </tr>
-          <tr data-hari="Kamis">
-            <td>Kamis</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
-          </tr>
-          <tr data-hari="Jumat">
-            <td>Jumat</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
-          </tr>
-          <tr data-hari="Sabtu">
-            <td>Sabtu</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
-          </tr>
-          <tr data-hari="Minggu">
-            <td>Minggu</td><td class="pelajaran1"></td><td class="pelajaran2"></td>
-          </tr>
+          <tr data-hari="Senin"><td>Senin</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Selasa"><td>Selasa</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Rabu"><td>Rabu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Kamis"><td>Kamis</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Jumat"><td>Jumat</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Sabtu"><td>Sabtu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
+          <tr data-hari="Minggu"><td>Minggu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
         </tbody>
       </table>
     </div>
@@ -156,8 +146,25 @@
     </div>
   </div>
 
+  <!-- 🔹 Tabel Catatan Check Bulanan -->
+  <div class="card mt-3">
+    <div class="card-header">Catatan Check Bulanan</div>
+    <div class="card-body">
+      <table class="table table-bordered text-center check-table">
+        <thead class="table-light">
+          <tr>
+            <th>Tanggal</th>
+            <th>Sudah Dikerjakan</th>
+          </tr>
+        </thead>
+        <tbody id="checkBulanBody"></tbody>
+      </table>
+    </div>
+  </div>
+
   <script>
     let programs = JSON.parse(localStorage.getItem('programs')) || [];
+    let monthlyChecks = JSON.parse(localStorage.getItem('monthlyChecks')) || {};
 
     document.getElementById('programForm').addEventListener('submit', function(e){
       e.preventDefault();
@@ -177,7 +184,6 @@
     });
 
     function renderPrograms() {
-      // Bersihkan tabel jadwal mingguan
       document.querySelectorAll('.pelajaran1, .pelajaran2').forEach(cell => cell.innerHTML = '');
 
       programs.forEach((prog, index) => {
@@ -204,6 +210,7 @@
 
       renderBulanTable();
       renderProgramList();
+      renderCheckBulanan();
     }
 
     function renderBulanTable() {
@@ -215,7 +222,6 @@
         "07":"Juli","08":"Agustus","09":"September","10":"Oktober","11":"November","12":"Desember"
       };
 
-      // Filter hanya program dengan bulan
       const withBulan = programs.filter(p => p.bulan && p.bulan !== "");
       const seenNames = new Set();
 
@@ -238,7 +244,6 @@
       tbody.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const name = btn.dataset.name;
-          // hapus semua program dengan nama ini yang punya bulan
           programs = programs.filter(p => !(p.nama === name && p.bulan));
           localStorage.setItem('programs', JSON.stringify(programs));
           renderPrograms();
@@ -254,6 +259,28 @@
         const li = document.createElement('li');
         li.textContent = nama;
         list.appendChild(li);
+      });
+    }
+
+    // 🔹 Buat tabel 1–31 dengan checkbox
+    function renderCheckBulanan() {
+      const tbody = document.getElementById('checkBulanBody');
+      tbody.innerHTML = '';
+      for (let i = 1; i <= 31; i++) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${i}</td>
+          <td><input type="checkbox" class="check-day" data-day="${i}" ${monthlyChecks[i] ? 'checked' : ''}></td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      document.querySelectorAll('.check-day').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const day = cb.dataset.day;
+          monthlyChecks[day] = cb.checked;
+          localStorage.setItem('monthlyChecks', JSON.stringify(monthlyChecks));
+        });
       });
     }
 
