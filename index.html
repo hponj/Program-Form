@@ -17,7 +17,7 @@
       background-color: #f8f9fa;
       border-radius: .25rem;
       padding: .5rem 1rem;
-      margin-bottom: 1.5rem; /* 🟩 Tambah jarak bawah */
+      margin-bottom: 1.5rem;
     }
     .check-table td {
       width: 14.2%;
@@ -29,7 +29,12 @@
       cursor: pointer;
     }
     .card {
-      margin-bottom: 1.5rem; /* 🟩 Tambah jarak antar card/table */
+      margin-bottom: 1.5rem;
+    }
+    .monthly-check-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
     }
   </style>
 </head>
@@ -154,8 +159,7 @@
     </div>
   </div>
 
-  <!-- ✅ Catatan Check Bulanan -->
-   <h3>Cahaya Sakti Pratama:</h3>
+  <!-- ✅ Dua Catatan Check Bulanan -->
   <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
       <div>
@@ -166,30 +170,19 @@
       <button id="resetChecklist" class="btn btn-sm btn-outline-danger">Reset Checklist</button>
     </div>
     <div class="card-body">
-      <div class="table-responsive">
+      <h3 class="monthly-check-title">Cahaya Sakti Pratama:</h3>
+      <div class="table-responsive mb-4">
         <table class="table table-bordered text-center align-middle check-table">
           <thead class="table-light">
             <tr>
               <th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th>
             </tr>
           </thead>
-          <tbody id="checkBulanBody"></tbody>
+          <tbody id="checkBulanBodyCSP"></tbody>
         </table>
       </div>
-    </div>
-  </div>
 
-  <h3>Dhimasmitra International:</h3>
-  <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <div>
-        <button id="prevMonth" class="btn btn-sm btn-outline-secondary me-2">‹ Sebelumnya</button>
-        <button id="nextMonth" class="btn btn-sm btn-outline-secondary">Berikutnya ›</button>
-      </div>
-      <span id="monthTitle" class="fw-bold"></span>
-      <button id="resetChecklist" class="btn btn-sm btn-outline-danger">Reset Checklist</button>
-    </div>
-    <div class="card-body">
+      <h3 class="monthly-check-title">Dhimasmitrainternational:</h3>
       <div class="table-responsive">
         <table class="table table-bordered text-center align-middle check-table">
           <thead class="table-light">
@@ -197,7 +190,7 @@
               <th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th>
             </tr>
           </thead>
-          <tbody id="checkBulanBody"></tbody>
+          <tbody id="checkBulanBodyDMI"></tbody>
         </table>
       </div>
     </div>
@@ -294,24 +287,22 @@
       });
     }
 
-    // === ✅ Kalender Bulanan Otomatis + Navigasi ===
+    // === Kalender Bulanan Otomatis + Navigasi ===
     let currentDate = new Date();
 
-    function renderCheckBulanan() {
-      const tbody = document.getElementById('checkBulanBody');
+    function createChecklistTable(tbodyId, storagePrefix) {
+      const tbody = document.getElementById(tbodyId);
       tbody.innerHTML = '';
 
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
-      const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-      document.getElementById('monthTitle').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const storageKey = `checklist-${year}-${month+1}`;
+      const storageKey = `${storagePrefix}-${year}-${month + 1}`;
       let monthlyChecks = JSON.parse(localStorage.getItem(storageKey)) || {};
 
       let tr = document.createElement('tr');
+
       for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
         tr.appendChild(document.createElement('td'));
       }
@@ -321,27 +312,50 @@
         td.innerHTML = `
           <div>
             <div class="fw-bold">${day}</div>
-            <input type="checkbox" class="form-check-input mt-1 check-day" data-day="${day}" ${monthlyChecks[day] ? 'checked' : ''}>
+            <input 
+              type="checkbox" 
+              class="form-check-input mt-1 check-day" 
+              data-day="${day}" 
+              data-storage="${storageKey}"
+              ${monthlyChecks[day] ? 'checked' : ''}>
           </div>`;
         tr.appendChild(td);
+
         if (new Date(year, month, day).getDay() === 0) {
           tbody.appendChild(tr);
           tr = document.createElement('tr');
         }
       }
-      if (tr.children.length > 0) tbody.appendChild(tr);
 
+      if (tr.children.length > 0) tbody.appendChild(tr);
+    }
+
+    function attachChecklistEvents() {
       document.querySelectorAll('.check-day').forEach(cb => {
         cb.addEventListener('change', () => {
           const day = cb.dataset.day;
+          const storageKey = cb.dataset.storage;
+          let monthlyChecks = JSON.parse(localStorage.getItem(storageKey)) || {};
           monthlyChecks[day] = cb.checked;
           localStorage.setItem(storageKey, JSON.stringify(monthlyChecks));
         });
       });
+    }
+
+    function renderCheckBulanan() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+      document.getElementById('monthTitle').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+      createChecklistTable('checkBulanBodyCSP', 'checklist-csp');
+      createChecklistTable('checkBulanBodyDMI', 'checklist-dmi');
+      attachChecklistEvents();
 
       document.getElementById('resetChecklist').onclick = () => {
         if (confirm('Yakin reset semua checklist bulan ini?')) {
-          localStorage.removeItem(storageKey);
+          localStorage.removeItem(`checklist-csp-${year}-${month + 1}`);
+          localStorage.removeItem(`checklist-dmi-${year}-${month + 1}`);
           renderCheckBulanan();
         }
       };
@@ -351,6 +365,7 @@
       currentDate.setMonth(currentDate.getMonth() - 1);
       renderCheckBulanan();
     };
+
     document.getElementById('nextMonth').onclick = () => {
       currentDate.setMonth(currentDate.getMonth() + 1);
       renderCheckBulanan();
