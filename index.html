@@ -3,192 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Program Scheduler</title>
+  <title>Financial & Activity Tracker</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .delete-btn {
-      background: none;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-      color: black;
-    }
-    .program-list {
-      background-color: #f8f9fa;
-      border-radius: .25rem;
-      padding: .5rem 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .check-table td {
-      width: 14.2%;
-      height: 90px;
-      vertical-align: middle;
-    }
-    .check-table input[type="checkbox"] {
-      transform: scale(1.2);
-      cursor: pointer;
-    }
-    .card {
-      margin-bottom: 1.5rem;
-    }
-    .monthly-check-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-    }
+    .delete-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #dc3545; }
+    .check-table td { width: 14.2%; height: 90px; vertical-align: middle; }
+    .check-table input[type="checkbox"] { transform: scale(1.2); cursor: pointer; }
+    .card { margin-bottom: 1.5rem; border-radius: 10px; overflow: hidden; }
+    .monthly-check-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .total-cash { font-size: 1.4rem; font-weight: bold; color: #198754; }
+    .input-adjust { width: 100px !important; display: inline-block; }
   </style>
 </head>
 <body class="container my-4">
 
-  <h2 class="mb-3">Program Scheduler</h2>
+  <h2 class="mb-4">Financial & Activity Tracker</h2>
 
-  <!-- Form Input Program -->
-  <form id="programForm" class="row g-3 mb-4">
-    <div class="col-md-3">
-      <label class="form-label">Nama Program</label>
-      <input type="text" id="namaProgram" class="form-control" required>
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <span class="fw-bold">Catatan Keuangan</span>
+        <span class="badge bg-light text-dark p-2" id="totalCashDisplay" style="font-size: 1rem;">Total: Rp 0</span>
     </div>
-    <div class="col-md-3">
-      <label class="form-label">Tanggal Mulai</label>
-      <input type="date" id="tanggalMulai" class="form-control">
-    </div>
-    <div class="col-md-3">
-      <label class="form-label">Tanggal Selesai</label>
-      <input type="date" id="tanggalSelesai" class="form-control">
-    </div>
-    <div class="col-md-3">
-      <label class="form-label">Tingkat Kepentingan</label>
-      <select id="kepentingan" class="form-select">
-        <option>Tinggi</option>
-        <option>Sedang</option>
-        <option>Rendah</option>
-      </select>
-    </div>
-
-    <div class="col-md-3">
-      <label class="form-label">Bulan (opsional)</label>
-      <select id="bulan" class="form-select">
-        <option value="">Tidak Termasuk</option>
-        <option value="01">Januari</option>
-        <option value="02">Februari</option>
-        <option value="03">Maret</option>
-        <option value="04">April</option>
-        <option value="05">Mei</option>
-        <option value="06">Juni</option>
-        <option value="07">Juli</option>
-        <option value="08">Agustus</option>
-        <option value="09">September</option>
-        <option value="10">Oktober</option>
-        <option value="11">November</option>
-        <option value="12">Desember</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <label class="form-label">Hari</label>
-      <select id="hari" class="form-select">
-        <option value="">Tidak Termasuk</option>
-        <option>Senin</option>
-        <option>Selasa</option>
-        <option>Rabu</option>
-        <option>Kamis</option>
-        <option>Jumat</option>
-        <option>Sabtu</option>
-        <option>Minggu</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <label class="form-label">Sesi</label>
-      <select id="sesi" class="form-select">
-        <option value="">Tidak Termasuk</option>
-        <option value="pelajaran1">Pelajaran Pertama</option>
-        <option value="pelajaran2">Pelajaran Kedua</option>
-      </select>
-    </div>
-    <div class="col-md-3 d-flex align-items-end">
-      <button type="submit" class="btn btn-primary w-100">Tambah Program</button>
-    </div>
-  </form>
-
-  <!-- List Program -->
-  <div class="program-list">
-    <h5>Daftar Program:</h5>
-    <ul id="programList" class="mb-0"></ul>
-  </div>
-
-  <!-- Jadwal Mingguan -->
-  <div class="card">
-    <div class="card-header">Jadwal Mingguan</div>
     <div class="card-body">
-      <table class="table table-bordered text-center">
-        <thead class="table-light">
-          <tr>
-            <th>Hari</th>
-            <th>Pelajaran Pertama</th>
-            <th>Pelajaran Kedua</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr data-hari="Senin"><td>Senin</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
-          <tr data-hari="Selasa"><td>Selasa</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
-          <tr data-hari="Rabu"><td>Rabu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
-          <tr data-hari="Kamis"><td>Kamis</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
-          <tr data-hari="Jumat"><td>Jumat</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
-          <tr data-hari="Sabtu"><td>Sabtu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
-          <tr data-hari="Minggu"><td>Minggu</td><td class="pelajaran1"></td><td class="pelajaran2"></td></tr>
-        </tbody>
-      </table>
+      <form id="financeForm" class="row g-2 mb-4">
+        <div class="col-md-5">
+          <input type="text" id="namaPos" class="form-control" placeholder="Nama Pos (misal: Uang Jajan)" required>
+        </div>
+        <div class="col-md-4">
+          <input type="number" id="nominalAwal" class="form-control" placeholder="Nominal Awal" required>
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary w-100">Tambah Pos</button>
+        </div>
+      </form>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Keterangan</th>
+              <th>Saldo</th>
+              <th class="text-center" style="width: 300px;">Update Saldo</th>
+              <th class="text-center">Hapus</th>
+            </tr>
+          </thead>
+          <tbody id="financeTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- Catatan Program Bulanan -->
-  <div class="card">
-    <div class="card-header">Catatan Program Bulanan</div>
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white fw-bold">Portofolio Saham</div>
     <div class="card-body">
-      <table class="table table-bordered text-center">
-        <thead class="table-light">
-          <tr>
-            <th>Bulan</th>
-            <th>Nama Program</th>
-            <th>Tanggal Mulai</th>
-            <th>Tanggal Selesai</th>
-            <th>Hapus</th>
-          </tr>
-        </thead>
-        <tbody id="bulanTableBody"></tbody>
-      </table>
+      <form id="stockForm" class="row g-2 mb-4">
+        <div class="col-md-5">
+          <input type="text" id="kodeSaham" class="form-control" placeholder="Kode Saham (misal: ASII)" required>
+        </div>
+        <div class="col-md-4">
+          <input type="number" id="jumlahLot" class="form-control" placeholder="Jumlah Lot Awal" required>
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-success w-100">Tambah Saham</button>
+        </div>
+      </form>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Kode</th>
+              <th>Total Lot</th>
+              <th class="text-center" style="width: 300px;">Update Lot</th>
+              <th class="text-center">Hapus</th>
+            </tr>
+          </thead>
+          <tbody id="stockTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- ✅ Dua Catatan Check Bulanan -->
-  <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+  <div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
       <div>
-        <button id="prevMonth" class="btn btn-sm btn-outline-secondary me-2">‹ Sebelumnya</button>
-        <button id="nextMonth" class="btn btn-sm btn-outline-secondary">Berikutnya ›</button>
+        <button id="prevMonth" class="btn btn-sm btn-light me-2">‹</button>
+        <button id="nextMonth" class="btn btn-sm btn-light">›</button>
       </div>
       <span id="monthTitle" class="fw-bold"></span>
-      <button id="resetChecklist" class="btn btn-sm btn-outline-danger">Reset Checklist</button>
+      <button id="resetChecklist" class="btn btn-sm btn-outline-light">Reset</button>
     </div>
     <div class="card-body">
-      <h3 class="monthly-check-title">Cahaya Sakti Pratama:</h3>
+      <h3 class="monthly-check-title text-primary">Cahaya Sakti Pratama:</h3>
       <div class="table-responsive mb-4">
         <table class="table table-bordered text-center align-middle check-table">
           <thead class="table-light">
-            <tr>
-              <th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th>
-            </tr>
+            <tr><th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th></tr>
           </thead>
           <tbody id="checkBulanBodyCSP"></tbody>
         </table>
       </div>
 
-      <h3 class="monthly-check-title">Dhimasmitrainternational:</h3>
+      <h3 class="monthly-check-title text-success">Dhimasmitrainternational:</h3>
       <div class="table-responsive">
         <table class="table table-bordered text-center align-middle check-table">
           <thead class="table-light">
-            <tr>
-              <th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th>
-            </tr>
+            <tr><th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th></tr>
           </thead>
           <tbody id="checkBulanBodyDMI"></tbody>
         </table>
@@ -197,103 +115,106 @@
   </div>
 
   <script>
-    let programs = JSON.parse(localStorage.getItem('programs')) || [];
-
-    document.getElementById('programForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const nama = document.getElementById('namaProgram').value.trim();
-      const mulai = document.getElementById('tanggalMulai').value;
-      const selesai = document.getElementById('tanggalSelesai').value;
-      const kepentingan = document.getElementById('kepentingan').value;
-      const bulan = document.getElementById('bulan').value;
-      const bulanNama = document.getElementById('bulan').selectedOptions[0].text;
-      const hari = document.getElementById('hari').value;
-      const sesi = document.getElementById('sesi').value;
-
-      programs.push({nama, mulai, selesai, kepentingan, bulan, bulanNama, hari, sesi});
-      localStorage.setItem('programs', JSON.stringify(programs));
-      this.reset();
-      renderPrograms();
-    });
-
-    function renderPrograms() {
-      document.querySelectorAll('.pelajaran1, .pelajaran2').forEach(cell => cell.innerHTML = '');
-      programs.forEach((prog, index) => {
-        if (prog.hari && prog.sesi) {
-          const div = document.createElement('div');
-          div.className = 'p-2 mb-1 bg-light border rounded position-relative text-start';
-          div.innerHTML = `
-            <button type="button" class="btn-close btn-sm position-absolute top-0 end-0 m-1"></button>
-            <strong>${prog.nama}</strong><br>
-            ${prog.mulai && prog.selesai ? `${prog.mulai} - ${prog.selesai}` : 'Tanpa batas waktu'}<br>
-            <span class="badge bg-${prog.kepentingan=='Tinggi'?'danger':prog.kepentingan=='Sedang'?'warning':'secondary'}">${prog.kepentingan}</span>
-          `;
-          div.querySelector('.btn-close').addEventListener('click', () => {
-            programs.splice(index,1);
-            localStorage.setItem('programs', JSON.stringify(programs));
-            renderPrograms();
-          });
-          const cell = document.querySelector(`tr[data-hari="${prog.hari}"] .${prog.sesi}`);
-          if(cell){ cell.appendChild(div); }
-        }
-      });
-      renderBulanTable();
-      renderProgramList();
-      renderCheckBulanan();
-    }
-
-    function renderBulanTable() {
-      const tbody = document.getElementById('bulanTableBody');
-      tbody.innerHTML = '';
-      const namaBulanMap = {
-        "01":"Januari","02":"Februari","03":"Maret","04":"April","05":"Mei","06":"Juni",
-        "07":"Juli","08":"Agustus","09":"September","10":"Oktober","11":"November","12":"Desember"
-      };
-      const withBulan = programs.filter(p => p.bulan && p.bulan !== "");
-      const seenNames = new Set();
-      withBulan.forEach(prog => {
-        if (!seenNames.has(prog.nama)) {
-          seenNames.add(prog.nama);
-          const bulanNama = prog.bulanNama || namaBulanMap[prog.bulan];
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${bulanNama}</td>
-            <td>${prog.nama}</td>
-            <td>${prog.mulai || '-'}</td>
-            <td>${prog.selesai || '-'}</td>
-            <td><button class="delete-btn" data-name="${prog.nama}">x</button></td>
-          `;
-          tbody.appendChild(tr);
-        }
-      });
-      tbody.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const name = btn.dataset.name;
-          programs = programs.filter(p => !(p.nama === name && p.bulan));
-          localStorage.setItem('programs', JSON.stringify(programs));
-          renderPrograms();
-        });
-      });
-    }
-
-    function renderProgramList() {
-      const list = document.getElementById('programList');
-      list.innerHTML = '';
-      const names = [...new Set(programs.map(p => p.nama))];
-      names.forEach(nama => {
-        const li = document.createElement('li');
-        li.textContent = nama;
-        list.appendChild(li);
-      });
-    }
-
-    // === Kalender Bulanan Otomatis + Navigasi ===
+    let finances = JSON.parse(localStorage.getItem('finances')) || [];
+    let stocks = JSON.parse(localStorage.getItem('stocks')) || [];
     let currentDate = new Date();
 
+    // === Fungsi Keuangan ===
+    document.getElementById('financeForm').onsubmit = function(e) {
+      e.preventDefault();
+      finances.push({ 
+        nama: document.getElementById('namaPos').value, 
+        saldo: parseFloat(document.getElementById('nominalAwal').value) 
+      });
+      updateFinance();
+      this.reset();
+    };
+
+    function updateFinance() {
+      localStorage.setItem('finances', JSON.stringify(finances));
+      const tbody = document.getElementById('financeTableBody');
+      tbody.innerHTML = '';
+      let total = 0;
+
+      finances.forEach((item, index) => {
+        total += item.saldo;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.nama}</strong></td>
+          <td>Rp ${item.saldo.toLocaleString('id-ID')}</td>
+          <td class="text-center">
+            <div class="input-group input-group-sm justify-content-center">
+              <input type="number" class="form-control input-adjust" id="adjFin-${index}" placeholder="Nilai">
+              <button class="btn btn-outline-success" onclick="changeFinance(${index}, 1)">+</button>
+              <button class="btn btn-outline-danger" onclick="changeFinance(${index}, -1)">-</button>
+            </div>
+          </td>
+          <td class="text-center"><button class="delete-btn" onclick="deleteFinance(${index})">×</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('totalCashDisplay').textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
+    }
+
+    window.changeFinance = (index, sign) => {
+      const input = document.getElementById(`adjFin-${index}`);
+      const val = parseFloat(input.value);
+      if(!isNaN(val)) {
+        finances[index].saldo += (val * sign);
+        updateFinance();
+      }
+    };
+
+    window.deleteFinance = (index) => { finances.splice(index, 1); updateFinance(); };
+
+    // === Fungsi Saham ===
+    document.getElementById('stockForm').onsubmit = function(e) {
+      e.preventDefault();
+      stocks.push({ 
+        kode: document.getElementById('kodeSaham').value.toUpperCase(), 
+        lot: parseInt(document.getElementById('jumlahLot').value) 
+      });
+      updateStocks();
+      this.reset();
+    };
+
+    function updateStocks() {
+      localStorage.setItem('stocks', JSON.stringify(stocks));
+      const tbody = document.getElementById('stockTableBody');
+      tbody.innerHTML = '';
+      stocks.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.kode}</strong></td>
+          <td>${item.lot} Lot</td>
+          <td class="text-center">
+            <div class="input-group input-group-sm justify-content-center">
+              <input type="number" class="form-control input-adjust" id="adjStock-${index}" placeholder="Lot">
+              <button class="btn btn-outline-success" onclick="changeStock(${index}, 1)">+</button>
+              <button class="btn btn-outline-danger" onclick="changeStock(${index}, -1)">-</button>
+            </div>
+          </td>
+          <td class="text-center"><button class="delete-btn" onclick="deleteStock(${index})">×</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.changeStock = (index, sign) => {
+      const input = document.getElementById(`adjStock-${index}`);
+      const val = parseInt(input.value);
+      if(!isNaN(val)) {
+        stocks[index].lot += (val * sign);
+        updateStocks();
+      }
+    };
+
+    window.deleteStock = (index) => { stocks.splice(index, 1); updateStocks(); };
+
+    // === Fungsi Checklist Bulanan ===
     function createChecklistTable(tbodyId, storagePrefix) {
       const tbody = document.getElementById(tbodyId);
       tbody.innerHTML = '';
-
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
       const firstDay = new Date(year, month, 1).getDay();
@@ -302,76 +223,42 @@
       let monthlyChecks = JSON.parse(localStorage.getItem(storageKey)) || {};
 
       let tr = document.createElement('tr');
-
-      for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
-        tr.appendChild(document.createElement('td'));
-      }
+      for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) tr.appendChild(document.createElement('td'));
 
       for (let day = 1; day <= daysInMonth; day++) {
         const td = document.createElement('td');
-        td.innerHTML = `
-          <div>
-            <div class="fw-bold">${day}</div>
-            <input 
-              type="checkbox" 
-              class="form-check-input mt-1 check-day" 
-              data-day="${day}" 
-              data-storage="${storageKey}"
-              ${monthlyChecks[day] ? 'checked' : ''}>
-          </div>`;
+        td.innerHTML = `<div><div class="fw-bold">${day}</div><input type="checkbox" class="form-check-input check-day" data-day="${day}" data-storage="${storageKey}" ${monthlyChecks[day] ? 'checked' : ''}></div>`;
         tr.appendChild(td);
-
-        if (new Date(year, month, day).getDay() === 0) {
-          tbody.appendChild(tr);
-          tr = document.createElement('tr');
-        }
+        if (new Date(year, month, day).getDay() === 0) { tbody.appendChild(tr); tr = document.createElement('tr'); }
       }
-
       if (tr.children.length > 0) tbody.appendChild(tr);
     }
 
-    function attachChecklistEvents() {
+    function renderCheckBulanan() {
+      const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+      document.getElementById('monthTitle').textContent = monthName;
+      createChecklistTable('checkBulanBodyCSP', 'checklist-csp');
+      createChecklistTable('checkBulanBodyDMI', 'checklist-dmi');
       document.querySelectorAll('.check-day').forEach(cb => {
-        cb.addEventListener('change', () => {
-          const day = cb.dataset.day;
-          const storageKey = cb.dataset.storage;
-          let monthlyChecks = JSON.parse(localStorage.getItem(storageKey)) || {};
-          monthlyChecks[day] = cb.checked;
-          localStorage.setItem(storageKey, JSON.stringify(monthlyChecks));
-        });
+        cb.onchange = () => {
+          let data = JSON.parse(localStorage.getItem(cb.dataset.storage)) || {};
+          data[cb.dataset.day] = cb.checked;
+          localStorage.setItem(cb.dataset.storage, JSON.stringify(data));
+        };
       });
     }
 
-    function renderCheckBulanan() {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-      const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-      document.getElementById('monthTitle').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-
-      createChecklistTable('checkBulanBodyCSP', 'checklist-csp');
-      createChecklistTable('checkBulanBodyDMI', 'checklist-dmi');
-      attachChecklistEvents();
-
-      document.getElementById('resetChecklist').onclick = () => {
-        if (confirm('Yakin reset semua checklist bulan ini?')) {
-          localStorage.removeItem(`checklist-csp-${year}-${month + 1}`);
-          localStorage.removeItem(`checklist-dmi-${year}-${month + 1}`);
-          renderCheckBulanan();
-        }
-      };
-    }
-
-    document.getElementById('prevMonth').onclick = () => {
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      renderCheckBulanan();
+    document.getElementById('prevMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCheckBulanan(); };
+    document.getElementById('nextMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCheckBulanan(); };
+    document.getElementById('resetChecklist').onclick = () => {
+      if (confirm('Reset checklist?')) {
+        localStorage.removeItem(`checklist-csp-${currentDate.getFullYear()}-${currentDate.getMonth()+1}`);
+        localStorage.removeItem(`checklist-dmi-${currentDate.getFullYear()}-${currentDate.getMonth()+1}`);
+        renderCheckBulanan();
+      }
     };
 
-    document.getElementById('nextMonth').onclick = () => {
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      renderCheckBulanan();
-    };
-
-    renderPrograms();
+    updateFinance(); updateStocks(); renderCheckBulanan();
   </script>
 </body>
 </html>
