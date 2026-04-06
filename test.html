@@ -6,52 +6,55 @@
   <title>Financial & Activity Tracker</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .delete-btn {
-      background: none; border: none; font-size: 16px; cursor: pointer; color: red;
-    }
+    .delete-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #dc3545; }
     .check-table td { width: 14.2%; height: 90px; vertical-align: middle; }
     .check-table input[type="checkbox"] { transform: scale(1.2); cursor: pointer; }
-    .card { margin-bottom: 1.5rem; }
+    .card { margin-bottom: 1.5rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .monthly-check-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
-    .total-cash { font-size: 1.5rem; font-weight: bold; color: #198754; }
+    .total-cash { font-size: 1.4rem; font-weight: bold; color: #198754; }
+    .input-adjust { width: 100px !important; display: inline-block; }
   </style>
 </head>
 <body class="container my-4">
 
-  <h2 class="mb-3">Financial & Activity Tracker</h2>
+  <h2 class="mb-4">Financial & Activity Tracker</h2>
 
   <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Catatan Keuangan</span>
+    <div class="card-header d-flex justify-content-between align-items-center bg-white py-3">
+        <span class="fw-bold">Catatan Keuangan</span>
         <span class="total-cash" id="totalCashDisplay">Total: Rp 0</span>
     </div>
     <div class="card-body">
-      <form id="financeForm" class="row g-2 mb-3">
+      <form id="financeForm" class="row g-2 mb-4">
         <div class="col-md-5">
           <input type="text" id="namaPos" class="form-control" placeholder="Nama Pos (misal: Uang Jajan)" required>
         </div>
         <div class="col-md-4">
-          <input type="number" id="nominalAwal" class="form-control" placeholder="Nominal Awal" required>
+          <input type="number" id="nominalAwal" class="form-control" placeholder="Saldo Awal" required>
         </div>
         <div class="col-md-3">
-          <button type="submit" class="btn btn-primary w-100">Tambah Pos</button>
+          <button type="submit" class="btn btn-primary w-100">Tambah Pos Baru</button>
         </div>
       </form>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Keterangan</th>
-            <th>Saldo</th>
-            <th class="text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="financeTableBody"></tbody>
-      </table>
+
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Keterangan</th>
+              <th>Saldo Saat Ini</th>
+              <th style="width: 300px;">Update Saldo (+/-)</th>
+              <th class="text-center">Hapus</th>
+            </tr>
+          </thead>
+          <tbody id="financeTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-header">Portofolio Saham</div>
+    <div class="card-header bg-white fw-bold">Portofolio Saham</div>
     <div class="card-body">
       <form id="stockForm" class="row g-2 mb-3">
         <div class="col-md-5">
@@ -61,14 +64,14 @@
           <input type="number" id="jumlahLot" class="form-control" placeholder="Jumlah Lot" required>
         </div>
         <div class="col-md-3">
-          <button type="submit" class="btn btn-success w-100">Simpan Saham</button>
+          <button type="submit" class="btn btn-success w-100">Update/Tambah Saham</button>
         </div>
       </form>
-      <table class="table table-hover">
-        <thead>
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
           <tr>
             <th>Kode Saham</th>
-            <th>Total Lot</th>
+            <th>Total Kepemilikan</th>
             <th class="text-center">Hapus</th>
           </tr>
         </thead>
@@ -78,16 +81,16 @@
   </div>
 
   <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header d-flex justify-content-between align-items-center bg-white py-3">
       <div>
         <button id="prevMonth" class="btn btn-sm btn-outline-secondary me-2">‹ Sebelumnya</button>
         <button id="nextMonth" class="btn btn-sm btn-outline-secondary">Berikutnya ›</button>
       </div>
       <span id="monthTitle" class="fw-bold"></span>
-      <button id="resetChecklist" class="btn btn-sm btn-outline-danger">Reset Checklist</button>
+      <button id="resetChecklist" class="btn btn-sm btn-outline-danger">Reset</button>
     </div>
     <div class="card-body">
-      <h3 class="monthly-check-title">Cahaya Sakti Pratama:</h3>
+      <h3 class="monthly-check-title text-primary">Cahaya Sakti Pratama (CSP):</h3>
       <div class="table-responsive mb-4">
         <table class="table table-bordered text-center align-middle check-table">
           <thead class="table-light">
@@ -99,7 +102,7 @@
         </table>
       </div>
 
-      <h3 class="monthly-check-title">Dhimasmitrainternational:</h3>
+      <h3 class="monthly-check-title text-success">Dhimasmitrainternational (DMI):</h3>
       <div class="table-responsive">
         <table class="table table-bordered text-center align-middle check-table">
           <thead class="table-light">
@@ -138,12 +141,17 @@
         total += item.saldo;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${item.nama}</td>
-          <td>Rp ${item.saldo.toLocaleString('id-ID')}</td>
+          <td><strong>${item.nama}</strong></td>
+          <td class="text-success fw-bold">Rp ${item.saldo.toLocaleString('id-ID')}</td>
+          <td>
+            <div class="input-group input-group-sm">
+              <input type="number" class="form-control input-adjust" id="adjustVal-${index}" placeholder="Nominal">
+              <button class="btn btn-outline-success" onclick="adjustFinance(${index}, true)">+</button>
+              <button class="btn btn-outline-danger" onclick="adjustFinance(${index}, false)">-</button>
+            </div>
+          </td>
           <td class="text-center">
-            <button class="btn btn-sm btn-outline-success" onclick="adjustFinance(${index}, 50000)">+50rb</button>
-            <button class="btn btn-sm btn-outline-danger" onclick="adjustFinance(${index}, -50000)">-50rb</button>
-            <button class="delete-btn ms-2" onclick="deleteFinance(${index})">×</button>
+            <button class="delete-btn" onclick="deleteFinance(${index})">&times;</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -151,14 +159,20 @@
       document.getElementById('totalCashDisplay').textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
     }
 
-    window.adjustFinance = (index, amount) => {
-      finances[index].saldo += amount;
+    window.adjustFinance = (index, isPlus) => {
+      const input = document.getElementById(`adjustVal-${index}`);
+      const val = parseFloat(input.value);
+      if (isNaN(val)) return;
+      
+      finances[index].saldo += isPlus ? val : -val;
       updateFinance();
     };
 
     window.deleteFinance = (index) => {
-      finances.splice(index, 1);
-      updateFinance();
+      if(confirm('Hapus pos keuangan ini?')) {
+        finances.splice(index, 1);
+        updateFinance();
+      }
     };
 
     // === Logika Saham ===
@@ -166,7 +180,15 @@
       e.preventDefault();
       const kode = document.getElementById('kodeSaham').value.toUpperCase();
       const lot = parseInt(document.getElementById('jumlahLot').value);
-      stocks.push({ kode, lot });
+      
+      // Update jika kode sudah ada, atau tambah baru
+      const existingIdx = stocks.findIndex(s => s.kode === kode);
+      if(existingIdx > -1) {
+        stocks[existingIdx].lot = lot;
+      } else {
+        stocks.push({ kode, lot });
+      }
+      
       updateStocks();
       this.reset();
     });
@@ -180,7 +202,7 @@
         tr.innerHTML = `
           <td><strong>${item.kode}</strong></td>
           <td>${item.lot} Lot</td>
-          <td class="text-center"><button class="delete-btn" onclick="deleteStock(${index})">×</button></td>
+          <td class="text-center"><button class="delete-btn" onclick="deleteStock(${index})">&times;</button></td>
         `;
         tbody.appendChild(tr);
       });
@@ -191,7 +213,7 @@
       updateStocks();
     };
 
-    // === Logika Checklist (Sesuai Kode Asli) ===
+    // === Logika Checklist ===
     function createChecklistTable(tbodyId, storagePrefix) {
       const tbody = document.getElementById(tbodyId);
       tbody.innerHTML = '';
@@ -211,7 +233,7 @@
         const td = document.createElement('td');
         td.innerHTML = `
           <div>
-            <div class="fw-bold">${day}</div>
+            <div class="fw-bold small">${day}</div>
             <input type="checkbox" class="form-check-input mt-1 check-day" 
               data-day="${day}" data-storage="${storageKey}" ${monthlyChecks[day] ? 'checked' : ''}>
           </div>`;
@@ -225,8 +247,6 @@
     }
 
     function renderCheckBulanan() {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
       const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
       document.getElementById('monthTitle').textContent = monthName;
 
@@ -252,7 +272,6 @@
       }
     };
 
-    // Initial Render
     updateFinance();
     updateStocks();
     renderCheckBulanan();
