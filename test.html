@@ -4,21 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Financial & Activity Tracker - Pro Edition</title>
+    <title>Cashflow Game Style Tracker</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --income-bg: #f0fdf4;
+            --income-text: #166534;
+            --expense-bg: #fef2f2;
+            --expense-text: #991b1b;
+            --asset-bg: #eff6ff;
+            --asset-text: #1e40af;
+            --liability-bg: #fff7ed;
+            --liability-text: #9a3412;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
         .delete-btn {
             background: none;
             border: none;
             font-size: 18px;
             cursor: pointer;
+            color: #94a3b8;
+            transition: 0.2s;
+        }
+
+        .delete-btn:hover {
             color: #dc3545;
         }
 
         .check-table td {
             width: 14.2%;
-            height: 90px;
+            height: 80px;
             vertical-align: middle;
+            border: 1px solid #e2e8f0;
         }
 
         .check-table input[type="checkbox"] {
@@ -27,100 +49,184 @@
         }
 
         .card {
+            border: none;
+            border-radius: 12px;
             margin-bottom: 1.5rem;
-            border-radius: 10px;
-            overflow: hidden;
         }
 
-        .monthly-check-title {
+        .card-header {
+            font-weight: 700;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Cashflow Game Style Layout */
+        .section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .half-col {
+            border-radius: 8px;
+            padding: 15px;
+            height: 100%;
+        }
+
+        .bg-income {
+            background-color: var(--income-bg);
+            color: var(--income-text);
+        }
+
+        .bg-expense {
+            background-color: var(--expense-bg);
+            color: var(--expense-text);
+        }
+
+        .bg-asset {
+            background-color: var(--asset-bg);
+            color: var(--asset-text);
+        }
+
+        .bg-liability {
+            background-color: var(--liability-bg);
+            color: var(--liability-text);
+        }
+
+        .total-display {
             font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-
-        .total-cash {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #198754;
+            font-weight: 700;
         }
 
         .input-adjust {
-            width: 100px !important;
-            display: inline-block;
-        }
-
-        .border-asset {
-            border-left: 5px solid #ffc107;
-        }
-
-        .border-cashflow {
-            border-left: 5px solid #0dcaf0;
+            width: 80px !important;
         }
     </style>
 </head>
 
 <body class="container my-4">
 
-    <h2 class="mb-4 text-center">Financial & Activity Tracker</h2>
+    <h2 class="mb-4 fw-bold text-center">Financial Statement</h2>
 
-    <div class="card shadow-sm border-asset">
-        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-            <span class="fw-bold">Aset & Liabilitas (Posisi Kekayaan)</span>
-            <span class="badge bg-dark text-white p-2" id="netWorthDisplay" style="font-size: 1rem;">Net Worth: Rp
-                0</span>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <span>CASH FLOW REPORT</span>
+            <span id="cashFlowMonthTitle" class="badge bg-secondary"></span>
         </div>
         <div class="card-body">
-            <form id="assetForm" class="row g-2 mb-4">
-                <div class="col-md-4">
-                    <input type="text" id="namaItem" class="form-control" placeholder="Nama (Laptop, Hutang, dll)"
-                        required>
+            <form id="cashFlowForm" class="row g-2 mb-4 p-2 border rounded bg-light">
+                <div class="col-md-5"><input type="text" id="cfDesc" class="form-control form-control-sm"
+                        placeholder="Keterangan" required></div>
+                <div class="col-md-2">
+                    <select id="cfType" class="form-select form-select-sm">
+                        <option value="in">Pemasukan (+)</option>
+                        <option value="out">Pengeluaran (-)</option>
+                    </select>
                 </div>
+                <div class="col-md-3"><input type="number" id="cfAmount" class="form-control form-control-sm"
+                        placeholder="Nominal" required></div>
+                <div class="col-md-2"><button type="submit" class="btn btn-dark btn-sm w-100 text-white">Catat</button>
+                </div>
+            </form>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="half-col bg-income">
+                        <div class="section-title">Income (Pemasukan)</div>
+                        <div class="total-display mb-2" id="totalIn">Rp 0</div>
+                        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                            <table class="table table-sm table-borderless align-middle">
+                                <tbody id="incomeTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="half-col bg-expense">
+                        <div class="section-title">Expenses (Pengeluaran)</div>
+                        <div class="total-display mb-2" id="totalOut">Rp 0</div>
+                        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                            <table class="table table-sm table-borderless align-middle">
+                                <tbody id="expenseTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 p-2 text-center rounded bg-light fw-bold" id="netCashFlowBox">
+                Net Cash Flow: <span id="netCashFlow">Rp 0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <span>BALANCE SHEET</span>
+            <span class="badge bg-dark" id="netWorthDisplay">Net Worth: Rp 0</span>
+        </div>
+        <div class="card-body">
+            <form id="assetForm" class="row g-2 mb-4 p-2 border rounded bg-light">
+                <div class="col-md-4"><input type="text" id="namaItem" class="form-control form-control-sm"
+                        placeholder="Nama Barang/Hutang" required></div>
                 <div class="col-md-3">
-                    <select id="tipeItem" class="form-select">
+                    <select id="tipeItem" class="form-select form-select-sm">
                         <option value="asset">Aset (+)</option>
                         <option value="liability">Liabilitas (-)</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <input type="number" id="nilaiItem" class="form-control" placeholder="Nilai Rp" required>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-warning w-100 fw-bold">Tambah</button>
+                <div class="col-md-3"><input type="number" id="nilaiItem" class="form-control form-control-sm"
+                        placeholder="Nilai Rp" required></div>
+                <div class="col-md-2"><button type="submit" class="btn btn-dark btn-sm w-100 text-white">Tambah</button>
                 </div>
             </form>
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <tbody id="assetTableBody"></tbody>
-                </table>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="half-col bg-asset">
+                        <div class="section-title">Assets (Kekayaan)</div>
+                        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                            <table class="table table-sm table-borderless align-middle">
+                                <tbody id="assetTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="half-col bg-liability">
+                        <div class="section-title">Liabilities (Hutang)</div>
+                        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                            <table class="table table-sm table-borderless align-middle">
+                                <tbody id="liabilityTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <span class="fw-bold">Catatan Keuangan (Kas/Liquid)</span>
-            <span class="badge bg-light text-dark p-2" id="totalCashDisplay" style="font-size: 1rem;">Total: Rp 0</span>
+            <span>Liquid Cash (Uang Kas)</span>
+            <span class="badge bg-white text-primary p-2" id="totalCashDisplay">Total: Rp 0</span>
         </div>
         <div class="card-body">
             <form id="financeForm" class="row g-2 mb-4">
-                <div class="col-md-5">
-                    <input type="text" id="namaPos" class="form-control" placeholder="Nama Pos (misal: Uang Jajan)"
-                        required>
-                </div>
-                <div class="col-md-4">
-                    <input type="number" id="nominalAwal" class="form-control" placeholder="Nominal Awal" required>
-                </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary w-100">Tambah Pos</button>
-                </div>
+                <div class="col-md-5"><input type="text" id="namaPos" class="form-control form-control-sm"
+                        placeholder="Nama Pos" required></div>
+                <div class="col-md-4"><input type="number" id="nominalAwal" class="form-control form-control-sm"
+                        placeholder="Nominal" required></div>
+                <div class="col-md-3"><button type="submit" class="btn btn-primary btn-sm w-100 text-white">Tambah
+                        Pos</button></div>
             </form>
             <div class="table-responsive">
-                <table class="table align-middle">
+                <table class="table align-middle table-sm">
                     <thead>
                         <tr>
-                            <th>Keterangan</th>
+                            <th>Pos</th>
                             <th>Saldo</th>
-                            <th class="text-center" style="width: 300px;">Update Saldo</th>
+                            <th class="text-center">Update</th>
                             <th class="text-center">Hapus</th>
                         </tr>
                     </thead>
@@ -130,83 +236,37 @@
         </div>
     </div>
 
-    <div class="card shadow-sm border-cashflow">
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-            <span class="fw-bold">Arus Kas Bulanan (In/Out)</span>
-            <span id="cashFlowMonthTitle" class="badge bg-light text-dark"></span>
-        </div>
-        <div class="card-body">
-            <div class="row text-center mb-3">
-                <div class="col"><small class="text-muted">Pemasukan</small>
-                    <div class="text-success fw-bold" id="totalIn">Rp 0</div>
-                </div>
-                <div class="col"><small class="text-muted">Pengeluaran</small>
-                    <div class="text-danger fw-bold" id="totalOut">Rp 0</div>
-                </div>
-                <div class="col"><small class="text-muted">Net Cash Flow</small>
-                    <div class="fw-bold" id="netCashFlow">Rp 0</div>
-                </div>
-            </div>
-            <form id="cashFlowForm" class="row g-2 mb-3">
-                <div class="col-md-5"><input type="text" id="cfDesc" class="form-control"
-                        placeholder="Keterangan Transaksi" required></div>
-                <div class="col-md-2">
-                    <select id="cfType" class="form-select">
-                        <option value="in">Masuk (+)</option>
-                        <option value="out">Keluar (-)</option>
-                    </select>
-                </div>
-                <div class="col-md-3"><input type="number" id="cfAmount" class="form-control" placeholder="Nominal"
-                        required></div>
-                <div class="col-md-2"><button type="submit" class="btn btn-info text-white w-100">Catat</button></div>
-            </form>
-            <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
-                <table class="table table-sm table-hover">
-                    <tbody id="cashFlowTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
     <div class="card shadow-sm">
-        <div class="card-header bg-success text-white fw-bold">Portofolio Saham</div>
+        <div class="card-header bg-success text-white fw-bold">Stock Portfolio</div>
         <div class="card-body">
             <form id="stockForm" class="row g-2 mb-4">
-                <div class="col-md-5">
-                    <input type="text" id="kodeSaham" class="form-control" placeholder="Kode Saham (misal: ASII)"
-                        required>
-                </div>
-                <div class="col-md-4">
-                    <input type="number" id="jumlahLot" class="form-control" placeholder="Jumlah Lot Awal" required>
-                </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-success w-100">Tambah Saham</button>
-                </div>
+                <div class="col-md-5"><input type="text" id="kodeSaham" class="form-control form-control-sm"
+                        placeholder="Kode Saham" required></div>
+                <div class="col-md-4"><input type="number" id="jumlahLot" class="form-control form-control-sm"
+                        placeholder="Lot" required></div>
+                <div class="col-md-3"><button type="submit"
+                        class="btn btn-success btn-sm w-100 text-white">Tambah</button></div>
             </form>
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Total Lot</th>
-                            <th class="text-center" style="width: 300px;">Update Lot</th>
-                            <th class="text-center">Hapus</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stockTableBody"></tbody>
-                </table>
-            </div>
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Lot</th>
+                        <th class="text-center">Update</th>
+                        <th class="text-center">Hapus</th>
+                    </tr>
+                </thead>
+                <tbody id="stockTableBody"></tbody>
+            </table>
         </div>
     </div>
 
     <div class="card shadow-sm">
         <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-            <div>
-                <button id="prevMonth" class="btn btn-sm btn-light me-2">‹</button>
-                <button id="nextMonth" class="btn btn-sm btn-light">›</button>
-            </div>
+            <div><button id="prevMonth" class="btn btn-sm btn-light">‹</button> <button id="nextMonth"
+                    class="btn btn-sm btn-light">›</button></div>
             <span id="monthTitle" class="fw-bold"></span>
-            <button id="resetChecklist" class="btn btn-sm btn-outline-light">Reset</button>
+            <button id="resetChecklist" class="btn btn-sm btn-outline-light text-white">Reset</button>
         </div>
         <div class="card-body">
             <h3 class="monthly-check-title text-primary">Cahaya Sakti Pratama:</h3>
@@ -226,7 +286,6 @@
                     <tbody id="checkBulanBodyCSP"></tbody>
                 </table>
             </div>
-
             <h3 class="monthly-check-title text-success">Dhimasmitrainternational:</h3>
             <div class="table-responsive">
                 <table class="table table-bordered text-center align-middle check-table">
@@ -254,100 +313,38 @@
         let cashflows = JSON.parse(localStorage.getItem('cashflows')) || {};
         let currentDate = new Date();
 
-        // === 1. Fungsi Aset & Liabilitas ===
+        // === BALANCESHEET LOGIC ===
         document.getElementById('assetForm').onsubmit = function (e) {
             e.preventDefault();
-            assets.push({
-                nama: document.getElementById('namaItem').value,
-                tipe: document.getElementById('tipeItem').value,
-                nilai: parseFloat(document.getElementById('nilaiItem').value)
-            });
+            assets.push({ nama: document.getElementById('namaItem').value, tipe: document.getElementById('tipeItem').value, nilai: parseFloat(document.getElementById('nilaiItem').value) });
             updateAssets();
             this.reset();
         };
 
         function updateAssets() {
             localStorage.setItem('assets', JSON.stringify(assets));
-            const tbody = document.getElementById('assetTableBody');
-            tbody.innerHTML = '';
+            const aBody = document.getElementById('assetTableBody');
+            const lBody = document.getElementById('liabilityTableBody');
+            aBody.innerHTML = ''; lBody.innerHTML = '';
             let netWorth = 0;
 
             assets.forEach((item, index) => {
                 const isAsset = item.tipe === 'asset';
                 netWorth += isAsset ? item.nilai : -item.nilai;
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-          <td><strong>${item.nama}</strong> <small class="text-muted">(${item.tipe})</small></td>
-          <td class="${isAsset ? 'text-success' : 'text-danger'} fw-bold">
-            ${isAsset ? '' : '-'}Rp ${item.nilai.toLocaleString('id-ID')}
-          </td>
-          <td class="text-end"><button class="delete-btn" onclick="deleteAsset(${index})">×</button></td>
-        `;
-                tbody.appendChild(tr);
+                tr.innerHTML = `<td style="font-size:0.85rem">${item.nama}</td><td class="text-end fw-bold" style="font-size:0.85rem">Rp ${item.nilai.toLocaleString('id-ID')}</td><td><button class="delete-btn" onclick="deleteAsset(${index})">×</button></td>`;
+                if (isAsset) aBody.appendChild(tr); else lBody.appendChild(tr);
             });
             document.getElementById('netWorthDisplay').textContent = `Net Worth: Rp ${netWorth.toLocaleString('id-ID')}`;
         }
         window.deleteAsset = (index) => { assets.splice(index, 1); updateAssets(); };
 
-        // === 2. Fungsi Keuangan (Kas) ===
-        document.getElementById('financeForm').onsubmit = function (e) {
-            e.preventDefault();
-            finances.push({
-                nama: document.getElementById('namaPos').value,
-                saldo: parseFloat(document.getElementById('nominalAwal').value)
-            });
-            updateFinance();
-            this.reset();
-        };
-
-        function updateFinance() {
-            localStorage.setItem('finances', JSON.stringify(finances));
-            const tbody = document.getElementById('financeTableBody');
-            tbody.innerHTML = '';
-            let total = 0;
-
-            finances.forEach((item, index) => {
-                total += item.saldo;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-          <td><strong>${item.nama}</strong></td>
-          <td>Rp ${item.saldo.toLocaleString('id-ID')}</td>
-          <td class="text-center">
-            <div class="input-group input-group-sm justify-content-center">
-              <input type="number" class="form-control input-adjust" id="adjFin-${index}" placeholder="Nilai">
-              <button class="btn btn-outline-success" onclick="changeFinance(${index}, 1)">+</button>
-              <button class="btn btn-outline-danger" onclick="changeFinance(${index}, -1)">-</button>
-            </div>
-          </td>
-          <td class="text-center"><button class="delete-btn" onclick="deleteFinance(${index})">×</button></td>
-        `;
-                tbody.appendChild(tr);
-            });
-            document.getElementById('totalCashDisplay').textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
-        }
-
-        window.changeFinance = (index, sign) => {
-            const input = document.getElementById(`adjFin-${index}`);
-            const val = parseFloat(input.value);
-            if (!isNaN(val)) {
-                finances[index].saldo += (val * sign);
-                updateFinance();
-            }
-        };
-
-        window.deleteFinance = (index) => { finances.splice(index, 1); updateFinance(); };
-
-        // === 3. Fungsi Cash Flow (In/Out Bulanan) ===
+        // === CASHFLOW LOGIC ===
         document.getElementById('cashFlowForm').onsubmit = function (e) {
             e.preventDefault();
             const monthKey = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`;
             if (!cashflows[monthKey]) cashflows[monthKey] = [];
-
-            cashflows[monthKey].push({
-                desc: document.getElementById('cfDesc').value,
-                type: document.getElementById('cfType').value,
-                amount: parseFloat(document.getElementById('cfAmount').value)
-            });
+            cashflows[monthKey].push({ desc: document.getElementById('cfDesc').value, type: document.getElementById('cfType').value, amount: parseFloat(document.getElementById('cfAmount').value) });
             updateCashFlow();
             this.reset();
         };
@@ -356,21 +353,16 @@
             localStorage.setItem('cashflows', JSON.stringify(cashflows));
             const monthKey = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`;
             const monthData = cashflows[monthKey] || [];
-            const tbody = document.getElementById('cashFlowTableBody');
-            tbody.innerHTML = '';
+            const inBody = document.getElementById('incomeTableBody');
+            const outBody = document.getElementById('expenseTableBody');
+            inBody.innerHTML = ''; outBody.innerHTML = '';
 
             let totalIn = 0, totalOut = 0;
             monthData.forEach((item, index) => {
-                if (item.type === 'in') totalIn += item.amount; else totalOut += item.amount;
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                <td>${item.desc}</td>
-                <td class="${item.type === 'in' ? 'text-success' : 'text-danger'} text-end fw-bold">
-                    ${item.type === 'in' ? '+' : '-'} Rp ${item.amount.toLocaleString('id-ID')}
-                </td>
-                <td class="text-end" style="width: 40px;"><button class="delete-btn" onclick="deleteCF(${index})">×</button></td>
-            `;
-                tbody.appendChild(tr);
+                tr.innerHTML = `<td style="font-size:0.85rem">${item.desc}</td><td class="text-end fw-bold" style="font-size:0.85rem">Rp ${item.amount.toLocaleString('id-ID')}</td><td><button class="delete-btn" onclick="deleteCF(${index})">×</button></td>`;
+                if (item.type === 'in') { totalIn += item.amount; inBody.appendChild(tr); }
+                else { totalOut += item.amount; outBody.appendChild(tr); }
             });
 
             document.getElementById('cashFlowMonthTitle').textContent = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
@@ -378,73 +370,60 @@
             document.getElementById('totalOut').textContent = `Rp ${totalOut.toLocaleString('id-ID')}`;
             const net = totalIn - totalOut;
             document.getElementById('netCashFlow').textContent = `Rp ${net.toLocaleString('id-ID')}`;
-            document.getElementById('netCashFlow').className = net >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+            document.getElementById('netCashFlowBox').style.color = net >= 0 ? '#166534' : '#991b1b';
         }
+        window.deleteCF = (index) => { const monthKey = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`; cashflows[monthKey].splice(index, 1); updateCashFlow(); };
 
-        window.deleteCF = (index) => {
-            const monthKey = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`;
-            cashflows[monthKey].splice(index, 1);
-            updateCashFlow();
+        // === FINANCE KAS LOGIC ===
+        document.getElementById('financeForm').onsubmit = function (e) {
+            e.preventDefault();
+            finances.push({ nama: document.getElementById('namaPos').value, saldo: parseFloat(document.getElementById('nominalAwal').value) });
+            updateFinance();
+            this.reset();
         };
+        function updateFinance() {
+            localStorage.setItem('finances', JSON.stringify(finances));
+            const tbody = document.getElementById('financeTableBody'); tbody.innerHTML = '';
+            let total = 0;
+            finances.forEach((item, index) => {
+                total += item.saldo;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><strong>${item.nama}</strong></td><td>Rp ${item.saldo.toLocaleString('id-ID')}</td><td class="text-center"><div class="input-group input-group-sm justify-content-center"><input type="number" class="form-control input-adjust" id="adjFin-${index}"><button class="btn btn-outline-success" onclick="changeFinance(${index}, 1)">+</button><button class="btn btn-outline-danger" onclick="changeFinance(${index}, -1)">-</button></div></td><td class="text-center"><button class="delete-btn" onclick="deleteFinance(${index})">×</button></td>`;
+                tbody.appendChild(tr);
+            });
+            document.getElementById('totalCashDisplay').textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
+        }
+        window.changeFinance = (index, sign) => { const input = document.getElementById(`adjFin-${index}`); const val = parseFloat(input.value); if (!isNaN(val)) { finances[index].saldo += (val * sign); updateFinance(); } };
+        window.deleteFinance = (index) => { finances.splice(index, 1); updateFinance(); };
 
-        // === 4. Fungsi Saham ===
+        // === STOCK LOGIC ===
         document.getElementById('stockForm').onsubmit = function (e) {
             e.preventDefault();
-            stocks.push({
-                kode: document.getElementById('kodeSaham').value.toUpperCase(),
-                lot: parseInt(document.getElementById('jumlahLot').value)
-            });
+            stocks.push({ kode: document.getElementById('kodeSaham').value.toUpperCase(), lot: parseInt(document.getElementById('jumlahLot').value) });
             updateStocks();
             this.reset();
         };
-
         function updateStocks() {
             localStorage.setItem('stocks', JSON.stringify(stocks));
-            const tbody = document.getElementById('stockTableBody');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById('stockTableBody'); tbody.innerHTML = '';
             stocks.forEach((item, index) => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-          <td><strong>${item.kode}</strong></td>
-          <td>${item.lot} Lot</td>
-          <td class="text-center">
-            <div class="input-group input-group-sm justify-content-center">
-              <input type="number" class="form-control input-adjust" id="adjStock-${index}" placeholder="Lot">
-              <button class="btn btn-outline-success" onclick="changeStock(${index}, 1)">+</button>
-              <button class="btn btn-outline-danger" onclick="changeStock(${index}, -1)">-</button>
-            </div>
-          </td>
-          <td class="text-center"><button class="delete-btn" onclick="deleteStock(${index})">×</button></td>
-        `;
+                tr.innerHTML = `<td><strong>${item.kode}</strong></td><td>${item.lot} Lot</td><td class="text-center"><div class="input-group input-group-sm justify-content-center"><input type="number" class="form-control input-adjust" id="adjStock-${index}"><button class="btn btn-outline-success" onclick="changeStock(${index}, 1)">+</button><button class="btn btn-outline-danger" onclick="changeStock(${index}, -1)">-</button></div></td><td class="text-center"><button class="delete-btn" onclick="deleteStock(${index})">×</button></td>`;
                 tbody.appendChild(tr);
             });
         }
-
-        window.changeStock = (index, sign) => {
-            const input = document.getElementById(`adjStock-${index}`);
-            const val = parseInt(input.value);
-            if (!isNaN(val)) {
-                stocks[index].lot += (val * sign);
-                updateStocks();
-            }
-        };
-
+        window.changeStock = (index, sign) => { const input = document.getElementById(`adjStock-${index}`); const val = parseInt(input.value); if (!isNaN(val)) { stocks[index].lot += (val * sign); updateStocks(); } };
         window.deleteStock = (index) => { stocks.splice(index, 1); updateStocks(); };
 
-        // === 5. Fungsi Checklist Bulanan ===
+        // === CHECKLIST LOGIC ===
         function createChecklistTable(tbodyId, storagePrefix) {
-            const tbody = document.getElementById(tbodyId);
-            tbody.innerHTML = '';
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const tbody = document.getElementById(tbodyId); tbody.innerHTML = '';
+            const year = currentDate.getFullYear(); const month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
             const storageKey = `${storagePrefix}-${year}-${month + 1}`;
             let monthlyChecks = JSON.parse(localStorage.getItem(storageKey)) || {};
-
             let tr = document.createElement('tr');
             for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) tr.appendChild(document.createElement('td'));
-
             for (let day = 1; day <= daysInMonth; day++) {
                 const td = document.createElement('td');
                 td.innerHTML = `<div><div class="fw-bold">${day}</div><input type="checkbox" class="form-check-input check-day" data-day="${day}" data-storage="${storageKey}" ${monthlyChecks[day] ? 'checked' : ''}></div>`;
@@ -455,40 +434,19 @@
         }
 
         function renderPage() {
-            const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-            document.getElementById('monthTitle').textContent = monthName;
-
+            document.getElementById('monthTitle').textContent = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
             createChecklistTable('checkBulanBodyCSP', 'checklist-csp');
             createChecklistTable('checkBulanBodyDMI', 'checklist-dmi');
-
-            document.querySelectorAll('.check-day').forEach(cb => {
-                cb.onchange = () => {
-                    let data = JSON.parse(localStorage.getItem(cb.dataset.storage)) || {};
-                    data[cb.dataset.day] = cb.checked;
-                    localStorage.setItem(cb.dataset.storage, JSON.stringify(data));
-                };
-            });
-
-            // Update cash flow agar sinkron dengan bulan yang dipilih
+            document.querySelectorAll('.check-day').forEach(cb => { cb.onchange = () => { let data = JSON.parse(localStorage.getItem(cb.dataset.storage)) || {}; data[cb.dataset.day] = cb.checked; localStorage.setItem(cb.dataset.storage, JSON.stringify(data)); }; });
             updateCashFlow();
         }
 
         document.getElementById('prevMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderPage(); };
         document.getElementById('nextMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderPage(); };
+        document.getElementById('resetChecklist').onclick = () => { if (confirm('Reset?')) { localStorage.removeItem(`checklist-csp-${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`); localStorage.removeItem(`checklist-dmi-${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`); renderPage(); } };
 
-        document.getElementById('resetChecklist').onclick = () => {
-            if (confirm('Reset checklist bulan ini?')) {
-                localStorage.removeItem(`checklist-csp-${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`);
-                localStorage.removeItem(`checklist-dmi-${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`);
-                renderPage();
-            }
-        };
-
-        // Inisialisasi awal
-        updateFinance();
-        updateStocks();
-        updateAssets();
-        renderPage();
+        // Init
+        updateFinance(); updateStocks(); updateAssets(); renderPage();
     </script>
 </body>
 
