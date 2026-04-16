@@ -109,7 +109,157 @@
 
   <h2 class="mb-4 fw-bold text-center">Financial Statement</h2>
 
-  
+  <div class="card shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+      <span>CASH FLOW REPORT</span>
+      <span id="cashFlowMonthTitle" class="badge bg-secondary"></span>
+    </div>
+    <div class="card-body">
+      <form id="cashFlowForm" class="row g-2 mb-4 p-2 border rounded bg-light">
+        <div class="col-md-5"><input type="text" id="cfDesc" class="form-control form-control-sm"
+            placeholder="Keterangan" required></div>
+        <div class="col-md-2">
+          <select id="cfType" class="form-select form-select-sm">
+            <option value="in">Pemasukan (+)</option>
+            <option value="out">Pengeluaran (-)</option>
+          </select>
+        </div>
+        <div class="col-md-3"><input type="number" id="cfAmount" class="form-control form-control-sm"
+            placeholder="Nominal" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-dark btn-sm w-100 text-white">Catat</button>
+        </div>
+      </form>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="half-col bg-income">
+            <div class="section-title">Income (Pemasukan)</div>
+            <div class="total-display mb-2" id="totalIn">Rp 0</div>
+            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+              <table class="table table-sm table-borderless align-middle">
+                <tbody id="incomeTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="half-col bg-expense">
+            <div class="section-title">Expenses (Pengeluaran)</div>
+            <div class="total-display mb-2" id="totalOut">Rp 0</div>
+            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+              <table class="table table-sm table-borderless align-middle">
+                <tbody id="expenseTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3 p-2 text-center rounded bg-light fw-bold" id="netCashFlowBox">
+        Net Cash Flow: <span id="netCashFlow">Rp 0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+      <span>BALANCE SHEET</span>
+      <span class="badge bg-dark" id="netWorthDisplay">Net Worth: Rp 0</span>
+    </div>
+    <div class="card-body">
+      <form id="assetForm" class="row g-2 mb-4 p-2 border rounded bg-light">
+        <div class="col-md-4"><input type="text" id="namaItem" class="form-control form-control-sm"
+            placeholder="Nama Barang/Hutang" required></div>
+        <div class="col-md-3">
+          <select id="tipeItem" class="form-select form-select-sm">
+            <option value="asset">Aset (+)</option>
+            <option value="liability">Liabilitas (-)</option>
+          </select>
+        </div>
+        <div class="col-md-3"><input type="number" id="nilaiItem" class="form-control form-control-sm"
+            placeholder="Nilai Rp" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-dark btn-sm w-100 text-white">Tambah</button>
+        </div>
+      </form>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="half-col bg-asset">
+            <div class="section-title">Assets (Kekayaan)</div>
+            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+              <table class="table table-sm table-borderless align-middle">
+                <tbody id="assetTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="half-col bg-liability">
+            <div class="section-title">Liabilities (Hutang)</div>
+            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+              <table class="table table-sm table-borderless align-middle">
+                <tbody id="liabilityTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <span>Liquid Cash (Uang Kas)</span>
+      <span class="badge bg-white text-primary p-2" id="totalCashDisplay">Total: Rp 0</span>
+    </div>
+    <div class="card-body">
+      <form id="financeForm" class="row g-2 mb-4">
+        <div class="col-md-5"><input type="text" id="namaPos" class="form-control form-control-sm"
+            placeholder="Nama Pos" required></div>
+        <div class="col-md-4"><input type="number" id="nominalAwal" class="form-control form-control-sm"
+            placeholder="Nominal" required></div>
+        <div class="col-md-3"><button type="submit" class="btn btn-primary btn-sm w-100 text-white">Tambah
+            Pos</button></div>
+      </form>
+      <div class="table-responsive">
+        <table class="table align-middle table-sm">
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Saldo</th>
+              <th class="text-center">Update</th>
+              <th class="text-center">Hapus</th>
+            </tr>
+          </thead>
+          <tbody id="financeTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white fw-bold">Stock Portfolio</div>
+    <div class="card-body">
+      <form id="stockForm" class="row g-2 mb-4">
+        <div class="col-md-5"><input type="text" id="kodeSaham" class="form-control form-control-sm"
+            placeholder="Kode Saham" required></div>
+        <div class="col-md-4"><input type="number" id="jumlahLot" class="form-control form-control-sm" placeholder="Lot"
+            required></div>
+        <div class="col-md-3"><button type="submit" class="btn btn-success btn-sm w-100 text-white">Tambah</button>
+        </div>
+      </form>
+      <table class="table table-sm align-middle">
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Lot</th>
+            <th class="text-center">Update</th>
+            <th class="text-center">Hapus</th>
+          </tr>
+        </thead>
+        <tbody id="stockTableBody"></tbody>
+      </table>
+    </div>
+  </div>
 
   <div class="card shadow-sm">
     <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
