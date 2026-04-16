@@ -4,226 +4,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Strategic Financial Statement - Cashflow Style</title>
+    <title>Strategic Financial Statement</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --main-purple: #8e74a1;
-            --bg-tan: #f4e4bc;
-        }
-
         body {
-            background-color: #d1c4a9;
-            font-family: 'Courier New', Courier, monospace;
-            color: #2d2d2d;
+            background-color: #f8fafc;
+            color: #334155;
         }
 
-        .statement-container {
-            background-color: var(--bg-tan);
-            border: 2px solid #5d4037;
-            padding: 20px;
-            box-shadow: 10px 10px 0px #5d4037;
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .header-bar {
-            background-color: var(--main-purple);
-            color: white;
-            padding: 5px 15px;
-            font-weight: bold;
+        .category-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #64748b;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            margin-top: 15px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .label-row {
-            border-bottom: 1px solid #5d4037;
-            padding: 5px 0;
-            display: flex;
-            justify-content: space-between;
+        .subtotal {
             font-size: 0.9rem;
-        }
-
-        .val-text {
             font-weight: bold;
-        }
-
-        .cash-display {
-            font-size: 2.5rem;
-            font-weight: 900;
-            text-align: right;
-        }
-
-        .progress-box {
-            border: 2px solid var(--main-purple);
-            height: 25px;
-            background: white;
-            position: relative;
-        }
-
-        .progress-fill {
-            background: var(--main-purple);
-            height: 100%;
-            transition: 0.5s;
+            color: #0f172a;
         }
 
         .delete-btn {
-            color: #ccc;
+            color: #cbd5e1;
             cursor: pointer;
             text-decoration: none;
-            font-size: 12px;
+            transition: 0.2s;
         }
 
         .delete-btn:hover {
-            color: red;
+            color: #ef4444;
         }
 
-        input,
-        select {
-            background: transparent;
-            border: 1px solid #bcaaa4;
-            font-family: inherit;
+        .payday-box {
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            padding: 15px;
         }
     </style>
 </head>
 
-<body class="container my-4">
+<body class="container my-5">
 
-    <div class="statement-container mx-auto" style="max-width: 900px;">
+    <h2 class="fw-bold mb-4 text-center">FINANCIAL STATEMENT</h2>
 
-        <div class="row mb-4">
-            <div class="col-md-7">
-                <div class="header-bar mb-2">INCOME</div>
-                <form id="incomeForm" class="row g-1 mb-2">
-                    <div class="col-6"><input type="text" id="incDesc" class="form-control form-control-sm"
-                            placeholder="Sumber (Gaji/Dividen)"></div>
-                    <div class="col-3"><input type="number" id="incVal" class="form-control form-control-sm"
-                            placeholder="Rp"></div>
-                    <div class="col-3"><button type="submit" class="btn btn-sm btn-dark w-100">Add</button></div>
-                </form>
-                <div id="incomeList"></div>
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white fw-bold">INCOME REPORT</div>
+                <div class="card-body">
+                    <form id="incomeForm" class="row g-2 mb-4">
+                        <div class="col-md-5"><input type="text" id="incDesc" class="form-control form-control-sm"
+                                placeholder="Keterangan" required></div>
+                        <div class="col-md-3">
+                            <select id="incCat" class="form-select form-select-sm">
+                                <option value="active">Active (Gaji)</option>
+                                <option value="dividend">Interest/Dividend</option>
+                                <option value="business">Real Estate/Business</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2"><input type="number" id="incVal" class="form-control form-control-sm"
+                                placeholder="Rp" required></div>
+                        <div class="col-md-2"><button type="submit" class="btn btn-dark btn-sm w-100">Add</button></div>
+                    </form>
 
-                <div class="header-bar mt-4 mb-2">EXPENSES</div>
-                <form id="expForm" class="row g-1 mb-2">
-                    <div class="col-6"><input type="text" id="expDesc" class="form-control form-control-sm"
-                            placeholder="Biaya (Pajak/Makan)"></div>
-                    <div class="col-3"><input type="number" id="expVal" class="form-control form-control-sm"
-                            placeholder="Rp"></div>
-                    <div class="col-3"><button type="submit" class="btn btn-sm btn-dark w-100">Add</button></div>
-                </form>
-                <div id="expenseList"></div>
+                    <div class="category-title">Active Income</div>
+                    <div id="listActive"></div>
+                    <div class="text-end subtotal mt-1">Sub-Total: <span id="subActive">Rp 0</span></div>
+
+                    <div class="category-title">Interest / Dividends</div>
+                    <div id="listDividend"></div>
+                    <div class="text-end subtotal mt-1">Sub-Total: <span id="subDividend">Rp 0</span></div>
+
+                    <div class="category-title">Real Estate / Business</div>
+                    <div id="listBusiness"></div>
+                    <div class="text-end subtotal mt-1">Sub-Total: <span id="subBusiness">Rp 0</span></div>
+                </div>
             </div>
 
-            <div class="col-md-5 text-end">
-                <p class="mb-0 fw-bold small">INCREASE PASSIVE INCOME TO ESCAPE THE RAT RACE</p>
-                <div class="progress-box my-2">
-                    <div id="freedomBar" class="progress-fill" style="width: 0%"></div>
-                </div>
-
-                <div class="mt-4">
-                    <span class="d-block small fw-bold">CASH ON HAND:</span>
-                    <div class="cash-display" id="totalCash">Rp 0</div>
-                </div>
-
-                <div class="mt-4 text-start border-top border-dark pt-2">
-                    <div class="d-flex justify-content-between"><span>TOTAL INCOME:</span> <span id="sumInc"
-                            class="fw-bold">Rp 0</span></div>
-                    <div class="d-flex justify-content-between"><span>TOTAL EXPENSES:</span> <span id="sumExp"
-                            class="fw-bold text-danger">Rp 0</span></div>
-                    <div class="d-flex justify-content-between border-top border-dark mt-1 pt-1 h5">
-                        <span class="fw-bold">PAYDAY:</span>
-                        <span id="paydayVal" class="fw-bold">Rp 0</span>
-                    </div>
+            <div class="card">
+                <div class="card-header bg-secondary text-white fw-bold">EXPENSES</div>
+                <div class="card-body">
+                    <form id="expForm" class="row g-2 mb-3">
+                        <div class="col-md-7"><input type="text" id="expDesc" class="form-control form-control-sm"
+                                placeholder="Jenis Pengeluaran" required></div>
+                        <div class="col-md-3"><input type="number" id="expVal" class="form-control form-control-sm"
+                                placeholder="Rp" required></div>
+                        <div class="col-md-2"><button type="submit" class="btn btn-outline-dark btn-sm w-100">+</button>
+                        </div>
+                    </form>
+                    <div id="listExpense"></div>
                 </div>
             </div>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="header-bar mb-2">ASSETS</div>
-                <form id="assetForm" class="row g-1 mb-2">
-                    <div class="col-6"><input type="text" id="astDesc" class="form-control form-control-sm"
-                            placeholder="Saham/Bisnis"></div>
-                    <div class="col-3"><input type="number" id="astVal" class="form-control form-control-sm"
-                            placeholder="Cost"></div>
-                    <div class="col-3"><button type="submit" class="btn btn-sm btn-dark w-100">+</button></div>
-                </form>
-                <div id="assetList"></div>
+        <div class="col-lg-5">
+            <div class="card mb-4 payday-box">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">TOTAL INCOME:</span>
+                    <span id="totalInc" class="fw-bold">Rp 0</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center text-danger">
+                    <span class="fw-bold">TOTAL EXPENSES:</span>
+                    <span id="totalExp" class="fw-bold">Rp 0</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center h4 mb-0">
+                    <span class="fw-bold">PAYDAY:</span>
+                    <span id="paydayVal" class="fw-bold text-primary">Rp 0</span>
+                </div>
             </div>
-            <div class="col-md-6">
-                <div class="header-bar mb-2">LIABILITIES</div>
-                <form id="liabForm" class="row g-1 mb-2">
-                    <div class="col-6"><input type="text" id="libDesc" class="form-control form-control-sm"
-                            placeholder="Hutang Bank/Kartu"></div>
-                    <div class="col-3"><input type="number" id="libVal" class="form-control form-control-sm"
-                            placeholder="Rp"></div>
-                    <div class="col-3"><button type="submit" class="btn btn-sm btn-dark w-100">+</button></div>
-                </form>
-                <div id="liabList"></div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-white fw-bold">ASSETS (Cost)</div>
+                <div class="card-body">
+                    <form id="assetForm" class="row g-1 mb-3">
+                        <div class="col-7"><input type="text" id="astDesc" class="form-control form-control-sm"
+                                placeholder="Aset"></div>
+                        <div class="col-3"><input type="number" id="astVal" class="form-control form-control-sm"
+                                placeholder="Rp"></div>
+                        <div class="col-2"><button type="submit" class="btn btn-sm btn-dark w-100">+</button></div>
+                    </form>
+                    <div id="listAsset"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-white fw-bold text-danger">LIABILITIES</div>
+                <div class="card-body">
+                    <form id="liabForm" class="row g-1 mb-3">
+                        <div class="col-7"><input type="text" id="libDesc" class="form-control form-control-sm"
+                                placeholder="Liabilitas"></div>
+                        <div class="col-3"><input type="number" id="libVal" class="form-control form-control-sm"
+                                placeholder="Rp"></div>
+                        <div class="col-2"><button type="submit" class="btn btn-sm btn-danger w-100">+</button></div>
+                    </form>
+                    <div id="listLiab"></div>
+                </div>
             </div>
         </div>
-
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('cashflow_db')) || {
-            cash: 0, inc: [], exp: [], ast: [], lib: []
-        };
+        let db = JSON.parse(localStorage.getItem('fin_v2')) || { inc: [], exp: [], ast: [], lib: [] };
 
-        function saveData() { localStorage.setItem('cashflow_db', JSON.stringify(db)); render(); }
+        function save() { localStorage.setItem('fin_v2', JSON.stringify(db)); render(); }
 
-        // Form Submissions
         document.getElementById('incomeForm').onsubmit = (e) => {
             e.preventDefault();
-            db.inc.push({ d: document.getElementById('incDesc').value, v: parseFloat(document.getElementById('incVal').value) });
-            saveData(); e.target.reset();
+            db.inc.push({ d: document.getElementById('incDesc').value, c: document.getElementById('incCat').value, v: parseFloat(document.getElementById('incVal').value) });
+            save(); e.target.reset();
         };
+
         document.getElementById('expForm').onsubmit = (e) => {
             e.preventDefault();
             db.exp.push({ d: document.getElementById('expDesc').value, v: parseFloat(document.getElementById('expVal').value) });
-            saveData(); e.target.reset();
+            save(); e.target.reset();
         };
+
         document.getElementById('assetForm').onsubmit = (e) => {
             e.preventDefault();
             db.ast.push({ d: document.getElementById('astDesc').value, v: parseFloat(document.getElementById('astVal').value) });
-            saveData(); e.target.reset();
+            save(); e.target.reset();
         };
+
         document.getElementById('liabForm').onsubmit = (e) => {
             e.preventDefault();
             db.lib.push({ d: document.getElementById('libDesc').value, v: parseFloat(document.getElementById('libVal').value) });
-            saveData(); e.target.reset();
+            save(); e.target.reset();
         };
 
-        function deleteItem(type, index) { db[type].splice(index, 1); saveData(); }
+        function del(type, i) { db[type].splice(i, 1); save(); }
 
         function render() {
-            let totalInc = 0; let totalExp = 0;
+            let tInc = 0, tExp = 0, sAct = 0, sDiv = 0, sBus = 0;
 
-            // Lists
-            const drawList = (id, data, type) => {
-                const el = document.getElementById(id); el.innerHTML = '';
-                data.forEach((item, i) => {
-                    if (type === 'inc' || type === 'exp') { if (type === 'inc') totalInc += item.v; else totalExp += item.v; }
-                    el.innerHTML += `<div class="label-row"><span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="deleteItem('${type}', ${i})">×</a></span></div>`;
-                });
-            };
+            const lists = { active: 'listActive', dividend: 'listDividend', business: 'listBusiness' };
+            Object.values(lists).forEach(id => document.getElementById(id).innerHTML = '');
+            document.getElementById('listExpense').innerHTML = '';
+            document.getElementById('listAsset').innerHTML = '';
+            document.getElementById('listLiab').innerHTML = '';
 
-            drawList('incomeList', db.inc, 'inc');
-            drawList('expenseList', db.exp, 'exp');
-            drawList('assetList', db.ast, 'ast');
-            drawList('liabList', db.lib, 'lib');
+            db.inc.forEach((item, i) => {
+                tInc += item.v;
+                if (item.c === 'active') sAct += item.v;
+                else if (item.c === 'dividend') sDiv += item.v;
+                else sBus += item.v;
 
-            const payday = totalInc - totalExp;
-            document.getElementById('sumInc').textContent = `Rp ${totalInc.toLocaleString()}`;
-            document.getElementById('sumExp').textContent = `Rp -${totalExp.toLocaleString()}`;
-            document.getElementById('paydayVal').textContent = `Rp ${payday.toLocaleString()}`;
-            document.getElementById('paydayVal').style.color = payday >= 0 ? 'green' : 'red';
+                document.getElementById(lists[item.c]).innerHTML += `<div class="d-flex justify-content-between small border-bottom py-1">
+            <span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('inc', ${i})">×</a></span>
+        </div>`;
+            });
 
-            // Total Cash (Saldo Aktif)
-            document.getElementById('totalCash').textContent = `Rp ${db.cash.toLocaleString()}`;
+            db.exp.forEach((item, i) => {
+                tExp += item.v;
+                document.getElementById('listExpense').innerHTML += `<div class="d-flex justify-content-between small border-bottom py-1">
+            <span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('exp', ${i})">×</a></span>
+        </div>`;
+            });
 
-            // Freedom Bar (Assumption: Passive Income is anything that's not "Gaji")
-            let passive = db.inc.filter(i => !i.d.toLowerCase().includes('gaji')).reduce((s, c) => s + c.v, 0);
-            let progress = totalExp > 0 ? (passive / totalExp) * 100 : 0;
-            document.getElementById('freedomBar').style.width = Math.min(progress, 100) + '%';
+            db.ast.forEach((item, i) => {
+                document.getElementById('listAsset').innerHTML += `<div class="d-flex justify-content-between small border-bottom py-1">
+            <span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('ast', ${i})">×</a></span>
+        </div>`;
+            });
+
+            db.lib.forEach((item, i) => {
+                document.getElementById('listLiab').innerHTML += `<div class="d-flex justify-content-between small border-bottom py-1 text-danger">
+            <span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('lib', ${i})">×</a></span>
+        </div>`;
+            });
+
+            document.getElementById('subActive').textContent = `Rp ${sAct.toLocaleString()}`;
+            document.getElementById('subDividend').textContent = `Rp ${sDiv.toLocaleString()}`;
+            document.getElementById('subBusiness').textContent = `Rp ${sBus.toLocaleString()}`;
+            document.getElementById('totalInc').textContent = `Rp ${tInc.toLocaleString()}`;
+            document.getElementById('totalExp').textContent = `Rp ${tExp.toLocaleString()}`;
+            document.getElementById('paydayVal').textContent = `Rp ${(tInc - tExp).toLocaleString()}`;
         }
 
         render();
