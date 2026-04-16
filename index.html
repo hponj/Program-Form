@@ -4,132 +4,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Strategic Financial Statement - Pro</title>
+    <title>Strategic Financial Statement + Cash Tracker</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             color: #1e293b;
+            font-size: 0.95rem;
         }
 
         .card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
         }
 
-        .category-title {
-            font-size: 0.8rem;
+        .header-title {
             font-weight: 800;
-            color: #64748b;
+            letter-spacing: 1px;
+            color: #0f172a;
+        }
+
+        .category-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #94a3b8;
             text-transform: uppercase;
             margin-top: 15px;
-            border-bottom: 2px solid #f1f5f9;
-        }
-
-        .subtotal {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #0f172a;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .delete-btn {
             color: #cbd5e1;
             cursor: pointer;
             text-decoration: none;
-            font-size: 1.1rem;
         }
 
         .delete-btn:hover {
             color: #ef4444;
         }
 
-        .progress-container {
+        .progress-bar-custom {
             background: #e2e8f0;
             border-radius: 50px;
-            height: 25px;
+            height: 20px;
             overflow: hidden;
-            position: relative;
         }
 
         .progress-fill {
-            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
             height: 100%;
-            transition: width 0.6s ease;
+            transition: 0.6s;
         }
 
-        .payday-box {
+        .payday-card {
             background: #1e293b;
             color: white;
-            border-radius: 12px;
-            padding: 20px;
+        }
+
+        .input-adjust {
+            width: 100px !important;
         }
     </style>
 </head>
 
 <body class="container my-4">
 
-    <div class="card mb-4">
+    <h2 class="header-title text-center mb-4">FINANCIAL SYSTEM</h2>
+
+    <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-end mb-2">
                 <div>
-                    <h6 class="fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">Passive Income Progress</h6>
-                    <small class="text-muted">Target: Passive Income > Total Expenses</small>
+                    <span class="fw-bold">PASSIVE INCOME PROGRESS</span>
+                    <br><small class="text-muted">Target: Passive Income > Total Expenses</small>
                 </div>
-                <div class="text-end">
-                    <span id="freedomPct" class="h4 fw-bold text-primary">0%</span>
-                </div>
+                <span id="freedomPct" class="h4 fw-bold text-primary">0%</span>
             </div>
-            <div class="progress-container">
+            <div class="progress-bar-custom">
                 <div id="freedomBar" class="progress-fill" style="width: 0%"></div>
             </div>
-            <div id="freedomStatus" class="small mt-2 fw-bold text-center text-secondary">STATUS: RAT RACE</div>
         </div>
     </div>
 
     <div class="row g-4">
         <div class="col-lg-7">
-            <div class="card mb-4">
-                <div class="card-header bg-dark text-white fw-bold">INCOME REPORT</div>
+            <div class="card">
+                <div class="card-header bg-white fw-bold">INCOME REPORT</div>
                 <div class="card-body">
-                    <form id="incomeForm" class="row g-2 mb-4 bg-light p-2 rounded">
-                        <div class="col-md-5"><input type="text" id="incDesc" class="form-control form-control-sm"
-                                placeholder="Keterangan" required></div>
+                    <form id="incomeForm" class="row g-2 mb-3">
+                        <div class="col-md-5"><input type="text" class="form-control form-control-sm"
+                                placeholder="Sumber" required></div>
                         <div class="col-md-3">
-                            <select id="incCat" class="form-select form-select-sm">
-                                <option value="active">Active (Gaji)</option>
+                            <select class="form-select form-select-sm">
+                                <option value="active">Active (Simple IT/Gaji)</option>
                                 <option value="dividend">Interest/Dividend</option>
                                 <option value="business">Real Estate/Business</option>
                             </select>
                         </div>
-                        <div class="col-md-2"><input type="number" id="incVal" class="form-control form-control-sm"
-                                placeholder="Rp" required></div>
+                        <div class="col-md-2"><input type="number" class="form-control form-control-sm" placeholder="Rp"
+                                required></div>
                         <div class="col-md-2"><button type="submit" class="btn btn-primary btn-sm w-100">Add</button>
                         </div>
                     </form>
 
-                    <div class="category-title">Active Income</div>
+                    <div class="category-label">Active Income</div>
                     <div id="listActive"></div>
-                    <div class="text-end subtotal mb-3">Sub-Total: <span id="subActive">Rp 0</span></div>
-
-                    <div class="category-title">Interest / Dividends</div>
+                    <div class="category-label text-primary">Interest / Dividends</div>
                     <div id="listDividend"></div>
-                    <div class="text-end subtotal mb-3 text-primary">Sub-Total: <span id="subDividend">Rp 0</span></div>
-
-                    <div class="category-title">Real Estate / Business</div>
+                    <div class="category-label text-primary">Real Estate / Business</div>
                     <div id="listBusiness"></div>
-                    <div class="text-end subtotal text-primary">Sub-Total: <span id="subBusiness">Rp 0</span></div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-header bg-white fw-bold border-bottom">EXPENSES</div>
+                <div class="card-header bg-white fw-bold text-danger">EXPENSES</div>
                 <div class="card-body">
                     <form id="expForm" class="row g-2 mb-3">
-                        <div class="col-md-7"><input type="text" id="expDesc" class="form-control form-control-sm"
-                                placeholder="Jenis Pengeluaran" required></div>
-                        <div class="col-md-3"><input type="number" id="expVal" class="form-control form-control-sm"
-                                placeholder="Rp" required></div>
+                        <div class="col-md-7"><input type="text" class="form-control form-control-sm"
+                                placeholder="Jenis Biaya" required></div>
+                        <div class="col-md-3"><input type="number" class="form-control form-control-sm" placeholder="Rp"
+                                required></div>
                         <div class="col-md-2"><button type="submit"
                                 class="btn btn-outline-danger btn-sm w-100">+</button></div>
                     </form>
@@ -139,103 +135,122 @@
         </div>
 
         <div class="col-lg-5">
-            <div class="payday-box mb-4 shadow">
-                <div class="d-flex justify-content-between small opacity-75"><span>Total Income</span><span
-                        id="totalInc">Rp 0</span></div>
-                <div class="d-flex justify-content-between small opacity-75"><span>Total Expenses</span><span
-                        id="totalExp">Rp 0</span></div>
-                <hr class="my-2 opacity-50">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="h5 fw-bold mb-0">MONTHLY PAYDAY</span>
-                    <span id="paydayVal" class="h3 fw-bold mb-0 text-info">Rp 0</span>
+            <div class="card payday-card border-0">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between small opacity-75"><span>Total Income</span><span
+                            id="totalInc">Rp 0</span></div>
+                    <div class="d-flex justify-content-between small opacity-75"><span>Total Expenses</span><span
+                            id="totalExp">Rp 0</span></div>
+                    <hr class="opacity-25">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">PAYDAY</span>
+                        <span id="paydayVal" class="h3 fw-bold mb-0 text-info">Rp 0</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="card mb-4">
-                <div class="card-header bg-white fw-bold">ASSETS (Cost)</div>
-                <div class="card-body">
-                    <form id="assetForm" class="row g-1 mb-3">
-                        <div class="col-7"><input type="text" id="astDesc" class="form-control form-control-sm"
-                                placeholder="Nama Aset"></div>
-                        <div class="col-3"><input type="number" id="astVal" class="form-control form-control-sm"
-                                placeholder="Rp"></div>
-                        <div class="col-2"><button type="submit" class="btn btn-sm btn-dark w-100">+</button></div>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">Liquid Cash (Uang Kas)</span>
+                    <span class="badge bg-white text-primary" id="totalCashDisplay">Total: Rp 0</span>
+                </div>
+                <div class="card-body p-0">
+                    <form id="cashForm" class="row g-1 p-3 border-bottom">
+                        <div class="col-7"><input type="text" class="form-control form-control-sm"
+                                placeholder="Nama Pos" required></div>
+                        <div class="col-3"><input type="number" class="form-control form-control-sm"
+                                placeholder="Nominal" required></div>
+                        <div class="col-2"><button type="submit" class="btn btn-primary btn-sm w-100">+</button></div>
                     </form>
-                    <div id="listAsset"></div>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <tbody id="cashTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header bg-white fw-bold text-danger">LIABILITIES</div>
-                <div class="card-body">
-                    <form id="liabForm" class="row g-1 mb-3">
-                        <div class="col-7"><input type="text" id="libDesc" class="form-control form-control-sm"
-                                placeholder="Hutang"></div>
-                        <div class="col-3"><input type="number" id="libVal" class="form-control form-control-sm"
-                                placeholder="Rp"></div>
-                        <div class="col-2"><button type="submit" class="btn btn-sm btn-danger w-100">+</button></div>
-                    </form>
-                    <div id="listLiab"></div>
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header small fw-bold">ASSETS</div>
+                        <div class="card-body p-2" id="listAsset"></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header small fw-bold text-danger">LIABILITIES</div>
+                        <div class="card-body p-2" id="listLiab"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('fin_vfinal')) || { inc: [], exp: [], ast: [], lib: [] };
+        let db = JSON.parse(localStorage.getItem('fin_sys_v1')) || { inc: [], exp: [], ast: [], lib: [], cash: [] };
 
-        function save() { localStorage.setItem('fin_vfinal', JSON.stringify(db)); render(); }
+        function save() { localStorage.setItem('fin_sys_v1', JSON.stringify(db)); render(); }
 
-        // Forms
-        const setupForm = (id, target) => {
+        // Unified Submission Logic
+        const handleForm = (id, target) => {
             document.getElementById(id).onsubmit = (e) => {
                 e.preventDefault();
-                const entry = { d: e.target[0].value, v: parseFloat(e.target[target === 'inc' ? 2 : 1].value) };
-                if (target === 'inc') entry.c = e.target[1].value;
-                db[target].push(entry);
+                const entry = { d: e.target[0].value, v: parseFloat(e.target[1].value) };
+                if (target === 'inc') { entry.c = e.target[1].value; entry.v = parseFloat(e.target[2].value); }
+                db[target === 'inc' ? 'inc' : target].push(entry);
                 save(); e.target.reset();
             };
         };
-        setupForm('incomeForm', 'inc'); setupForm('expForm', 'exp');
-        setupForm('assetForm', 'ast'); setupForm('liabForm', 'lib');
+
+        handleForm('incomeForm', 'inc'); handleForm('expForm', 'exp');
+        document.getElementById('cashForm').onsubmit = (e) => { e.preventDefault(); db.cash.push({ d: e.target[0].value, v: parseFloat(e.target[1].value) }); save(); e.target.reset(); };
 
         window.del = (type, i) => { db[type].splice(i, 1); save(); };
+        window.adjCash = (i, s) => { const val = parseFloat(prompt("Nominal Ubah:")); if (!isNaN(val)) { db.cash[i].v += (val * s); save(); } };
 
         function render() {
-            let tInc = 0, tExp = 0, sAct = 0, sDiv = 0, sBus = 0;
+            let tInc = 0, tExp = 0, pInc = 0, tCash = 0;
             const ids = { active: 'listActive', dividend: 'listDividend', business: 'listBusiness' };
             Object.values(ids).forEach(id => document.getElementById(id).innerHTML = '');
-            ['listExpense', 'listAsset', 'listLiab'].forEach(id => document.getElementById(id).innerHTML = '');
+            ['listExpense', 'cashTableBody'].forEach(id => document.getElementById(id).innerHTML = '');
 
+            // Income Logic
             db.inc.forEach((item, i) => {
-                tInc += item.v;
-                if (item.c === 'active') sAct += item.v; else if (item.c === 'dividend') sDiv += item.v; else sBus += item.v;
-                document.getElementById(ids[item.c]).innerHTML += `<div class="d-flex justify-content-between small border-bottom py-1"><span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('inc', ${i})">×</a></span></div>`;
+                tInc += item.v; if (item.c !== 'active') pInc += item.v;
+                document.getElementById(ids[item.c]).innerHTML += `<div class="d-flex justify-content-between border-bottom py-1 small"><span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('inc', ${i})">×</a></span></div>`;
             });
 
+            // Expense Logic
             db.exp.forEach((item, i) => {
                 tExp += item.v;
-                document.getElementById('listExpense').innerHTML += `<div class="d-flex justify-content-between small border-bottom py-1"><span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('exp', ${i})">×</a></span></div>`;
+                document.getElementById('listExpense').innerHTML += `<div class="d-flex justify-content-between border-bottom py-1 small text-danger"><span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('exp', ${i})">×</a></span></div>`;
             });
 
-            const drawBasic = (data, id, type) => data.forEach((item, i) => document.getElementById(id).innerHTML += `<div class="d-flex justify-content-between small border-bottom py-1"><span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="del('${type}', ${i})">×</a></span></div>`);
-            drawBasic(db.ast, 'listAsset', 'ast'); drawBasic(db.lib, 'listLiab', 'lib');
+            // Liquid Cash Table Logic
+            db.cash.forEach((item, i) => {
+                tCash += item.v;
+                document.getElementById('cashTableBody').innerHTML += `
+          <tr>
+            <td class="ps-3"><strong>${item.d}</strong><br><small class="text-muted">Rp ${item.v.toLocaleString()}</small></td>
+            <td class="text-end pe-3">
+                <button class="btn btn-outline-success btn-sm" onclick="adjCash(${i}, 1)">+</button>
+                <button class="btn btn-outline-danger btn-sm" onclick="adjCash(${i}, -1)">-</button>
+                <a class="delete-btn ms-2" onclick="del('cash', ${i})">×</a>
+            </td>
+          </tr>`;
+            });
 
-            // Update UI Text
-            document.getElementById('subActive').textContent = `Rp ${sAct.toLocaleString()}`;
-            document.getElementById('subDividend').textContent = `Rp ${sDiv.toLocaleString()}`;
-            document.getElementById('subBusiness').textContent = `Rp ${sBus.toLocaleString()}`;
+            // Final Stats
             document.getElementById('totalInc').textContent = `Rp ${tInc.toLocaleString()}`;
             document.getElementById('totalExp').textContent = `Rp ${tExp.toLocaleString()}`;
             document.getElementById('paydayVal').textContent = `Rp ${(tInc - tExp).toLocaleString()}`;
+            document.getElementById('totalCashDisplay').textContent = `Total: Rp ${tCash.toLocaleString()}`;
 
             // Progress Logic
-            const passive = sDiv + sBus;
-            const progress = tExp > 0 ? (passive / tExp) * 100 : 0;
+            const progress = tExp > 0 ? (pInc / tExp) * 100 : 0;
             document.getElementById('freedomBar').style.width = Math.min(progress, 100) + '%';
             document.getElementById('freedomPct').textContent = Math.round(progress) + '%';
-            document.getElementById('freedomStatus').textContent = progress >= 100 ? "STATUS: FINANCIALLY FREE! 🎉" : "STATUS: RAT RACE 🏃‍♂️";
-            document.getElementById('freedomStatus').className = progress >= 100 ? "small mt-2 fw-bold text-center text-success" : "small mt-2 fw-bold text-center text-secondary";
         }
         render();
     </script>
