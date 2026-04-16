@@ -4,255 +4,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Elite Financial Tracker - Cashflow Style</title>
+    <title>Strategic Financial Statement - Cashflow Style</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            --income-bg: #f0fdf4;
-            --income-text: #166534;
-            --expense-bg: #fef2f2;
-            --expense-text: #991b1b;
-            --asset-bg: #eff6ff;
-            --asset-text: #1e40af;
-            --liability-bg: #fff7ed;
-            --liability-text: #9a3412;
+            --main-purple: #8e74a1;
+            --bg-tan: #f4e4bc;
         }
 
         body {
-            background-color: #f1f5f9;
-            color: #1e293b;
-            font-family: 'Inter', sans-serif;
+            background-color: #d1c4a9;
+            font-family: 'Courier New', Courier, monospace;
+            color: #2d2d2d;
         }
 
-        .card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .statement-container {
+            background-color: var(--bg-tan);
+            border: 2px solid #5d4037;
+            padding: 20px;
+            box-shadow: 10px 10px 0px #5d4037;
         }
 
-        .section-title {
-            font-size: 0.8rem;
+        .header-bar {
+            background-color: var(--main-purple);
+            color: white;
+            padding: 5px 15px;
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            font-weight: 800;
-            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .label-row {
+            border-bottom: 1px solid #5d4037;
+            padding: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .val-text {
+            font-weight: bold;
+        }
+
+        .cash-display {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: right;
+        }
+
+        .progress-box {
+            border: 2px solid var(--main-purple);
+            height: 25px;
+            background: white;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: var(--main-purple);
+            height: 100%;
+            transition: 0.5s;
         }
 
         .delete-btn {
-            background: none;
-            border: none;
-            color: #cbd5e1;
-            transition: 0.2s;
+            color: #ccc;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
         }
 
         .delete-btn:hover {
-            color: #ef4444;
+            color: red;
         }
 
-        .freedom-bar {
-            height: 12px;
-            border-radius: 10px;
-            background-color: #e2e8f0;
-            overflow: hidden;
-        }
-
-        .bg-income {
-            background: var(--income-bg);
-            color: var(--income-text);
-            padding: 20px;
-            border-radius: 12px;
-        }
-
-        .bg-expense {
-            background: var(--expense-bg);
-            color: var(--expense-text);
-            padding: 20px;
-            border-radius: 12px;
+        input,
+        select {
+            background: transparent;
+            border: 1px solid #bcaaa4;
+            font-family: inherit;
         }
     </style>
 </head>
 
 <body class="container my-4">
 
-    <h2 class="mb-4 fw-bold text-center">STRATEGIC FINANCIAL STATEMENT</h2>
+    <div class="statement-container mx-auto" style="max-width: 900px;">
 
-    <div class="card mb-4 bg-dark text-white">
-        <div class="card-body p-4">
-            <div class="row align-items-center text-center">
-                <div class="col-md-4">
-                    <small class="text-secondary">Passive Income</small>
-                    <h3 class="fw-bold text-success" id="dashPassive">Rp 0</h3>
-                </div>
-                <div class="col-md-4">
-                    <small class="text-secondary">Total Expenses</small>
-                    <h3 class="fw-bold text-danger" id="dashExpense">Rp 0</h3>
-                </div>
-                <div class="col-md-4">
-                    <small class="text-secondary text-uppercase fw-bold">Financial Freedom Progress</small>
-                    <div class="freedom-bar mt-2">
-                        <div id="freedomProgress" class="progress-bar bg-success" style="width: 0%"></div>
-                    </div>
-                    <small id="freedomStatus" class="mt-1 d-block text-info">Rat Race Status</small>
-                </div>
+        <div class="row mb-4">
+            <div class="col-md-7">
+                <div class="header-bar mb-2">INCOME</div>
+                <form id="incomeForm" class="row g-1 mb-2">
+                    <div class="col-6"><input type="text" id="incDesc" class="form-control form-control-sm"
+                            placeholder="Sumber (Gaji/Dividen)"></div>
+                    <div class="col-3"><input type="number" id="incVal" class="form-control form-control-sm"
+                            placeholder="Rp"></div>
+                    <div class="col-3"><button type="submit" class="btn btn-sm btn-dark w-100">Add</button></div>
+                </form>
+                <div id="incomeList"></div>
+
+                <div class="header-bar mt-4 mb-2">EXPENSES</div>
+                <form id="expForm" class="row g-1 mb-2">
+                    <div class="col-6"><input type="text" id="expDesc" class="form-control form-control-sm"
+                            placeholder="Biaya (Pajak/Makan)"></div>
+                    <div class="col-3"><input type="number" id="expVal" class="form-control form-control-sm"
+                            placeholder="Rp"></div>
+                    <div class="col-3"><button type="submit" class="btn btn-sm btn-dark w-100">Add</button></div>
+                </form>
+                <div id="expenseList"></div>
             </div>
-        </div>
-    </div>
 
-    <div class="card mb-4">
-        <div class="card-header bg-white d-flex justify-content-between fw-bold">
-            REPORT: <span id="currentMonthText">MEI 2026</span>
-        </div>
-        <div class="card-body">
-            <form id="cashFlowForm" class="row g-2 mb-4 p-3 bg-light rounded">
-                <div class="col-md-4"><input type="text" id="cfDesc" class="form-control"
-                        placeholder="Sumber/Keterangan" required></div>
-                <div class="col-md-2">
-                    <select id="cfCat" class="form-select">
-                        <option value="active">Active Inc</option>
-                        <option value="passive">Passive Inc</option>
-                        <option value="expense">Expense</option>
-                    </select>
+            <div class="col-md-5 text-end">
+                <p class="mb-0 fw-bold small">INCREASE PASSIVE INCOME TO ESCAPE THE RAT RACE</p>
+                <div class="progress-box my-2">
+                    <div id="freedomBar" class="progress-fill" style="width: 0%"></div>
                 </div>
-                <div class="col-md-3"><input type="number" id="cfAmount" class="form-control" placeholder="Nominal Rp"
-                        required></div>
-                <div class="col-md-3"><button type="submit" class="btn btn-primary w-100 fw-bold">CATAT
-                        TRANSAKSI</button></div>
-            </form>
 
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="bg-income">
-                        <div class="section-title">Income (Passive & Active)</div>
-                        <div id="incomeList" style="max-height: 250px; overflow-y: auto;"></div>
-                    </div>
+                <div class="mt-4">
+                    <span class="d-block small fw-bold">CASH ON HAND:</span>
+                    <div class="cash-display" id="totalCash">Rp 0</div>
                 </div>
-                <div class="col-md-6">
-                    <div class="bg-expense">
-                        <div class="section-title">Total Expenses</div>
-                        <div id="expenseList" style="max-height: 250px; overflow-y: auto;"></div>
+
+                <div class="mt-4 text-start border-top border-dark pt-2">
+                    <div class="d-flex justify-content-between"><span>TOTAL INCOME:</span> <span id="sumInc"
+                            class="fw-bold">Rp 0</span></div>
+                    <div class="d-flex justify-content-between"><span>TOTAL EXPENSES:</span> <span id="sumExp"
+                            class="fw-bold text-danger">Rp 0</span></div>
+                    <div class="d-flex justify-content-between border-top border-dark mt-1 pt-1 h5">
+                        <span class="fw-bold">PAYDAY:</span>
+                        <span id="paydayVal" class="fw-bold">Rp 0</span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-7">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-white fw-bold">ASSETS & PORTFOLIO</div>
-                <div class="card-body">
-                    <form id="assetForm" class="row g-2 mb-3">
-                        <div class="col-6"><input type="text" id="assetName" class="form-control form-control-sm"
-                                placeholder="Nama Aset (Saham/Alat)"></div>
-                        <div class="col-4"><input type="number" id="assetVal" class="form-control form-control-sm"
-                                placeholder="Nilai/Cost"></div>
-                        <div class="col-2"><button type="submit" class="btn btn-dark btn-sm w-100">+</button></div>
-                    </form>
-                    <div id="assetList" class="list-group list-group-flush"></div>
-                </div>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="header-bar mb-2">ASSETS</div>
+                <form id="assetForm" class="row g-1 mb-2">
+                    <div class="col-6"><input type="text" id="astDesc" class="form-control form-control-sm"
+                            placeholder="Saham/Bisnis"></div>
+                    <div class="col-3"><input type="number" id="astVal" class="form-control form-control-sm"
+                            placeholder="Cost"></div>
+                    <div class="col-3"><button type="submit" class="btn btn-sm btn-dark w-100">+</button></div>
+                </form>
+                <div id="assetList"></div>
+            </div>
+            <div class="col-md-6">
+                <div class="header-bar mb-2">LIABILITIES</div>
+                <form id="liabForm" class="row g-1 mb-2">
+                    <div class="col-6"><input type="text" id="libDesc" class="form-control form-control-sm"
+                            placeholder="Hutang Bank/Kartu"></div>
+                    <div class="col-3"><input type="number" id="libVal" class="form-control form-control-sm"
+                            placeholder="Rp"></div>
+                    <div class="col-3"><button type="submit" class="btn btn-sm btn-dark w-100">+</button></div>
+                </form>
+                <div id="liabList"></div>
             </div>
         </div>
-        <div class="col-md-5">
-            <div class="card h-100 shadow-sm border-danger">
-                <div class="card-header bg-white fw-bold text-danger">LIABILITIES (HUTANG)</div>
-                <div class="card-body">
-                    <form id="liabForm" class="row g-2 mb-3">
-                        <div class="col-7"><input type="text" id="liabName" class="form-control form-control-sm"
-                                placeholder="Hutang"></div>
-                        <div class="col-3"><input type="number" id="liabVal" class="form-control form-control-sm"
-                                placeholder="Rp"></div>
-                        <div class="col-2"><button type="submit" class="btn btn-outline-danger btn-sm w-100">+</button>
-                        </div>
-                    </form>
-                    <div id="liabList"></div>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <script>
-        let cfData = JSON.parse(localStorage.getItem('cf_data')) || [];
-        let assetData = JSON.parse(localStorage.getItem('asset_data')) || [];
-        let liabData = JSON.parse(localStorage.getItem('liab_data')) || [];
-
-        // FORM HANDLERS
-        document.getElementById('cashFlowForm').onsubmit = function (e) {
-            e.preventDefault();
-            cfData.push({ desc: document.getElementById('cfDesc').value, cat: document.getElementById('cfCat').value, amount: parseFloat(document.getElementById('cfAmount').value) });
-            updateUI(); this.reset();
+        let db = JSON.parse(localStorage.getItem('cashflow_db')) || {
+            cash: 0, inc: [], exp: [], ast: [], lib: []
         };
 
-        document.getElementById('assetForm').onsubmit = function (e) {
+        function saveData() { localStorage.setItem('cashflow_db', JSON.stringify(db)); render(); }
+
+        // Form Submissions
+        document.getElementById('incomeForm').onsubmit = (e) => {
             e.preventDefault();
-            assetData.push({ name: document.getElementById('assetName').value, val: parseFloat(document.getElementById('assetVal').value) });
-            updateUI(); this.reset();
+            db.inc.push({ d: document.getElementById('incDesc').value, v: parseFloat(document.getElementById('incVal').value) });
+            saveData(); e.target.reset();
+        };
+        document.getElementById('expForm').onsubmit = (e) => {
+            e.preventDefault();
+            db.exp.push({ d: document.getElementById('expDesc').value, v: parseFloat(document.getElementById('expVal').value) });
+            saveData(); e.target.reset();
+        };
+        document.getElementById('assetForm').onsubmit = (e) => {
+            e.preventDefault();
+            db.ast.push({ d: document.getElementById('astDesc').value, v: parseFloat(document.getElementById('astVal').value) });
+            saveData(); e.target.reset();
+        };
+        document.getElementById('liabForm').onsubmit = (e) => {
+            e.preventDefault();
+            db.lib.push({ d: document.getElementById('libDesc').value, v: parseFloat(document.getElementById('libVal').value) });
+            saveData(); e.target.reset();
         };
 
-        document.getElementById('liabForm').onsubmit = function (e) {
-            e.preventDefault();
-            liabData.push({ name: document.getElementById('liabName').value, val: parseFloat(document.getElementById('liabVal').value) });
-            updateUI(); this.reset();
-        };
+        function deleteItem(type, index) { db[type].splice(index, 1); saveData(); }
 
-        function updateUI() {
-            localStorage.setItem('cf_data', JSON.stringify(cfData));
-            localStorage.setItem('asset_data', JSON.stringify(assetData));
-            localStorage.setItem('liab_data', JSON.stringify(liabData));
+        function render() {
+            let totalInc = 0; let totalExp = 0;
 
-            let passInc = 0, actInc = 0, totalExp = 0;
+            // Lists
+            const drawList = (id, data, type) => {
+                const el = document.getElementById(id); el.innerHTML = '';
+                data.forEach((item, i) => {
+                    if (type === 'inc' || type === 'exp') { if (type === 'inc') totalInc += item.v; else totalExp += item.v; }
+                    el.innerHTML += `<div class="label-row"><span>${item.d}</span><span>Rp ${item.v.toLocaleString()} <a class="delete-btn" onclick="deleteItem('${type}', ${i})">×</a></span></div>`;
+                });
+            };
 
-            const incList = document.getElementById('incomeList');
-            const expList = document.getElementById('expenseList');
-            incList.innerHTML = ''; expList.innerHTML = '';
+            drawList('incomeList', db.inc, 'inc');
+            drawList('expenseList', db.exp, 'exp');
+            drawList('assetList', db.ast, 'ast');
+            drawList('liabList', db.lib, 'lib');
 
-            cfData.forEach((item, index) => {
-                const div = `<div class="d-flex justify-content-between border-bottom py-1 small">
-          <span>${item.desc} ${item.cat === 'passive' ? '🔄' : ''}</span>
-          <span class="fw-bold">Rp ${item.amount.toLocaleString('id-ID')} 
-          <button class="delete-btn" onclick="deleteItem('cf', ${index})">×</button></span>
-        </div>`;
-                if (item.cat === 'expense') { totalExp += item.amount; expList.innerHTML += div; }
-                else {
-                    if (item.cat === 'passive') passInc += item.amount; else actInc += item.amount;
-                    incList.innerHTML += div;
-                }
-            });
+            const payday = totalInc - totalExp;
+            document.getElementById('sumInc').textContent = `Rp ${totalInc.toLocaleString()}`;
+            document.getElementById('sumExp').textContent = `Rp -${totalExp.toLocaleString()}`;
+            document.getElementById('paydayVal').textContent = `Rp ${payday.toLocaleString()}`;
+            document.getElementById('paydayVal').style.color = payday >= 0 ? 'green' : 'red';
 
-            // Update Dashboard
-            document.getElementById('dashPassive').textContent = `Rp ${passInc.toLocaleString('id-ID')}`;
-            document.getElementById('dashExpense').textContent = `Rp ${totalExp.toLocaleString('id-ID')}`;
+            // Total Cash (Saldo Aktif)
+            document.getElementById('totalCash').textContent = `Rp ${db.cash.toLocaleString()}`;
 
-            const progress = totalExp > 0 ? (passInc / totalExp) * 100 : 0;
-            document.getElementById('freedomProgress').style.width = Math.min(progress, 100) + '%';
-            document.getElementById('freedomStatus').textContent = progress >= 100 ? "OUT OF THE RAT RACE! 🎉" : "RAT RACE MODE 🏃‍♂️";
-
-            // Update Assets
-            const aList = document.getElementById('assetList'); aList.innerHTML = '';
-            assetData.forEach((item, index) => {
-                aList.innerHTML += `<div class="list-group-item d-flex justify-content-between p-2 small">
-            ${item.name} <span class="fw-bold">Rp ${item.val.toLocaleString('id-ID')} 
-            <button class="delete-btn" onclick="deleteItem('asset', ${index})">×</button></span>
-        </div>`;
-            });
-
-            // Update Liabilities
-            const lList = document.getElementById('liabList'); lList.innerHTML = '';
-            liabData.forEach((item, index) => {
-                lList.innerHTML += `<div class="d-flex justify-content-between border-bottom p-2 small">
-            ${item.name} <span class="text-danger fw-bold">Rp ${item.val.toLocaleString('id-ID')} 
-            <button class="delete-btn" onclick="deleteItem('liab', ${index})">×</button></span>
-        </div>`;
-            });
+            // Freedom Bar (Assumption: Passive Income is anything that's not "Gaji")
+            let passive = db.inc.filter(i => !i.d.toLowerCase().includes('gaji')).reduce((s, c) => s + c.v, 0);
+            let progress = totalExp > 0 ? (passive / totalExp) * 100 : 0;
+            document.getElementById('freedomBar').style.width = Math.min(progress, 100) + '%';
         }
 
-        window.deleteItem = (type, index) => {
-            if (type === 'cf') cfData.splice(index, 1);
-            else if (type === 'asset') assetData.splice(index, 1);
-            else liabData.splice(index, 1);
-            updateUI();
-        };
-
-        updateUI();
+        render();
     </script>
 </body>
 
